@@ -5,11 +5,30 @@ import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.trees.Tree;
 
 public class compareNLPTree<T> {
-	public compareNLPTree(NLPTreeNode<T> expNLPTree, NLPTreeNode<T> actNLPTree, List<T> rules) {
+	public boolean compareTree_sameStructure(NLPTreeNode<T> expTreeNode, NLPTreeNode<T> actTreeNode) {
+		try {
+			if (expTreeNode.children.size() == 0 || actTreeNode.children.size() == 0) {
+				System.out.println("Comparing " + expTreeNode.data + " VS " + actTreeNode.data);
+				return (expTreeNode.data.equals(actTreeNode.data));
+			}
+			boolean match = true;
+			for (int i = 0; i < expTreeNode.children.size(); i++) {
+				NLPTreeNode exp_child = expTreeNode.children.get(i);
+				NLPTreeNode act_child = actTreeNode.children.get(i);
+
+				match = match && compareTree_sameStructure(exp_child, act_child);
+
+			}
+			return match;
+		}catch (IndexOutOfBoundsException err){
+			System.err.println(err);
+			return false;
+		}
 	}
 	
 	/////test/////
 	public static void main(String[] args) {
+		/*
 		Document expDoc = new Document("I am Apple.");
 		Sentence expSent = expDoc.sentence(0);
 		Tree expTree = expSent.parse();
@@ -25,7 +44,7 @@ public class compareNLPTree<T> {
 		NLPTreeNode<String> actNLPTree = actNLPTreeList.get(0);
 		
 		
-		compareNLPTree<String> compareTest = new compareNLPTree<String>(expNLPTree, actNLPTree, null);
+		compareNLPTree<String> compareTest = new compareNLPTree<String>(expNLPTree, actNLPTree);
 		
 		
 		System.out.println("------------------------------------");
@@ -53,6 +72,13 @@ public class compareNLPTree<T> {
 		for(NLPTreeNode<String> node :actNLPTree.leafNodeList()) {
 			System.out.println(node.data);
 		}
-		
+
+		 */
+		coreNLPOutput NLPTree = new coreNLPOutput();
+		compareNLPTree compare = new compareNLPTree();
+		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest rate");
+
+		System.out.println(compare.compareTree_sameStructure(test_exp.get(0), test_act.get(0)));
 	}
 }

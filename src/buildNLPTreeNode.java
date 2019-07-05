@@ -20,7 +20,7 @@ public class buildNLPTreeNode {
                     NLPTree.add(this.root);
                     pNode = this.root;
                     //System.err.println("pass root node" + " ID:" + (nodeID-1));
-                    System.err.println(root.data + " " + root.type);
+                    //System.err.println(root.data + " " + root.type);
 
                     for (Tree childNode : t.children()) {
                         buildTree(childNode, this.root);
@@ -34,7 +34,7 @@ public class buildNLPTreeNode {
                     cNode.parent = pNode;
                     pNode = cNode;
                     //System.err.println("pass other node" + " ID:" + (nodeID-1));
-                    System.err.println(cNode.data + " " + cNode.type);
+                    //System.err.println(cNode.data + " " + cNode.type);
                     for (Tree childNode : t.children()) {
                         buildTree(childNode, pNode);
                     }
@@ -45,7 +45,7 @@ public class buildNLPTreeNode {
                 pNode.children.add(cNode);
                 cNode.parent = pNode;
                 //System.err.println("pass leaf node" + " ID:" + (nodeID-1));
-                System.err.println(cNode.data + " " + cNode.type);
+                //System.err.println(cNode.data + " " + cNode.type);
             }
         }
 

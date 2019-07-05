@@ -255,6 +255,7 @@ public class ReadFileAndBuildTrees {
 		System.out.println("Processed output count: " + processedOutputCount);
 	}
 
+
 	public void traverseNCompare(TreeNode<String> expRoot, TreeNode<String> actRoot) {
 		if (expRoot.level.equalsIgnoreCase("L0") && actRoot.level.equalsIgnoreCase("L0")) {
 			System.out.println("Traversing L0");
