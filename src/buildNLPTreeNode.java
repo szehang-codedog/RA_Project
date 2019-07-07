@@ -48,7 +48,7 @@ public class buildNLPTreeNode {
                 //System.err.println(cNode.data + " " + cNode.type);
             }
         }
-
+        NLPTree.get(0).initialAssign();
         return NLPTree;
     }
 }
