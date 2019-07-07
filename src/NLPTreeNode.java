@@ -9,6 +9,7 @@ public class NLPTreeNode<T> {
 	int levelID;
 	int nodeID;
 	int childID;
+	int tokenID;
 	int startPos, endPos;
 	NLPTreeNode<T> parent;
 	List<NLPTreeNode<T>> children;
@@ -78,11 +79,13 @@ public class NLPTreeNode<T> {
 	}
 	// other features ...
 
-	// print the tree
+	//START of print tree
+	//ONLY printWholeTree should be called
 	public void printWholeTree() {
 		this.assignChildId();
+		this.assignTokenId();
 		int level = 0;
-		System.out.println(this.data + " " + this.childID);
+		System.out.println(this.data + " " + this.tokenID);
 		level++;
 		if (!this.children.isEmpty()) {
 			for (NLPTreeNode<T> child : this.children)
@@ -94,13 +97,14 @@ public class NLPTreeNode<T> {
 		for (int i = 0; i < level; i++) {
 			System.out.print("	");
 		}
-		System.out.println(this.data + " " + this.childID);
+		System.out.println(this.data + " " + this.tokenID);
 		level++;
 		if (!this.children.isEmpty()) {
 			for (NLPTreeNode<T> child : this.children)
 				child.printTree(level);
 		}
 	}
+	//END of print tree
 
 	// list all leaf node
 	public List<NLPTreeNode<T>> leafNodeList() {
@@ -129,6 +133,18 @@ public class NLPTreeNode<T> {
 		}
 	}
 	
+	public NLPTreeNode<T> getRoot() {
+		if(this.parent == null) {
+			return this;
+		} else {
+			return this.parent.getRoot();
+		}
+	}
+	
+	
+	
+	//ID ASSIGNMENT//
+	
 	//should be called by the root ONLY
 	//MUST call after the whole tree was builded
 	public void assignChildId() { 
@@ -145,6 +161,19 @@ public class NLPTreeNode<T> {
 				}
 			}
 		}
+	}
+	
+	public void assignTokenId() {
+		int idCount = 0;
+		for(NLPTreeNode<T> token: this.leafNodeList()) {
+			token.tokenID = idCount++;
+		}
+		
+	}
+	
+	public void initialAssign() {
+		this.assignChildId();
+		this.assignTokenId();
 	}
 
 }
