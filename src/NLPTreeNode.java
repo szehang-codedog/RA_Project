@@ -80,8 +80,9 @@ public class NLPTreeNode<T> {
 
 	// print the tree
 	public void printWholeTree() {
+		this.assignChildId();
 		int level = 0;
-		System.out.println(this.data + " " + this.nodeID);
+		System.out.println(this.data + " " + this.childID);
 		level++;
 		if (!this.children.isEmpty()) {
 			for (NLPTreeNode<T> child : this.children)
@@ -93,7 +94,7 @@ public class NLPTreeNode<T> {
 		for (int i = 0; i < level; i++) {
 			System.out.print("	");
 		}
-		System.out.println(this.data + " " + this.nodeID);
+		System.out.println(this.data + " " + this.childID);
 		level++;
 		if (!this.children.isEmpty()) {
 			for (NLPTreeNode<T> child : this.children)
@@ -125,6 +126,24 @@ public class NLPTreeNode<T> {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	//should be called by the root ONLY
+	//MUST call after the whole tree was builded
+	public void assignChildId() { 
+		/////////////
+		NLPTreeNode<T> root = this;
+		if(root.isLeaf()) {
+			return;
+		} else {
+			if(this.children.size() > 0) {
+				int idCount = 0;
+				for(NLPTreeNode<T> child: this.children) {
+					child.childID = idCount++;
+					child.assignChildId();
+				}
+			}
 		}
 	}
 
