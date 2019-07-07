@@ -63,6 +63,13 @@ public class newCompare<T> {
 			if there are remaining tokens that are not ignored
 				return false
 			 */
+			for (NLPTreeNode<T> token: currentAct.getRoot().leafNodeList()) {
+				if (token.tokenID > currentAct.tokenID) {
+					if (!isIgnore(token.data)) {
+						return false;
+					}
+				}
+			}
 		}
 
 		return true;
