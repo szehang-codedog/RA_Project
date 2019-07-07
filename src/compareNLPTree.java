@@ -37,6 +37,7 @@ public class compareNLPTree<T> {
 		System.out.println("------------------------------------");
 		System.out.println(expNLPTreeList.get(7).data);
 		System.out.println(actNLPTreeList.get(7).data);
+		System.out.println("Root = " + expNLPTreeList.get(7).getRoot().data);
 		
 		PhraseSimilarity ps = new PhraseSimilarity();
 		double two_phrase_sim = ps.phraseSim(expNLPTreeList.get(10).data, actNLPTreeList.get(10).data);
