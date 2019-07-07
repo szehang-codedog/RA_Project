@@ -37,8 +37,10 @@ public class newCompare<T> {
 			if (isIgnore(currentExp.data)) // ignore or not
 				return true;
 
-			while ((currentAct.nodeID <= last_act.nodeID) && isIgnore(currentAct.data)){
+			while ((currentAct.tokenID <= last_act.tokenID) && isIgnore(currentAct.data)){
 				// find the next token (sibling) of currentAct
+				currentAct = currentAct.getRoot().leafNodeList().get(currentAct.tokenID + 1);
+				/////////
 			}
 		}
 		return false;
