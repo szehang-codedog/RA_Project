@@ -13,11 +13,13 @@ public class newCompare<T> {
 
 	public boolean compare_sameStructure(NLPTreeNode<T> currentExp, NLPTreeNode<T> currentAct) {
 		try {
-
+			// BASE case
 			if (currentExp.isLeaf()) {
 				System.out.println("Comparing " + currentExp.data + " VS " + currentAct.data + "   ((" + currentExp.data.equals(currentAct.data)); // DEBUG
 				return (currentExp.data.equals(currentAct.data));
 			}
+
+			// RECURSIVE case
 			boolean match = true;
 			for (int i = 0; i < currentExp.children.size(); i++) {
 				NLPTreeNode<T> exp_child = currentExp.children.get(i);
@@ -32,19 +34,40 @@ public class newCompare<T> {
 		}
 	}
 
-	public boolean compare_diffStructure(NLPTreeNode<T> currentExp, NLPTreeNode<T> currentAct, NLPTreeNode<T> last_act){
+	public boolean compare_diffStructure(NLPTreeNode<T> currentExp, NLPTreeNode<T> currentAct, NLPTreeNode<T> lastAct){
+		// BASE case
 		if(currentExp.isLeaf()){
-			if (isIgnore(currentExp.data)) // ignore or not
+			if (isIgnore(currentExp.data))
 				return true;
 
-			while ((currentAct.tokenID <= last_act.tokenID) && isIgnore(currentAct.data)){
-				// find the next token (sibling) of currentAct
+			while ((currentAct.tokenID <= lastAct.tokenID) && isIgnore(currentAct.data))
 				currentAct = currentAct.getRoot().leafNodeList().get(currentAct.tokenID + 1);
-				/////////
-			}
+
+			if (currentAct.tokenID > lastAct.tokenID)
+				return false;
+
+			currentAct = currentAct.getRoot().leafNodeList().get(currentAct.tokenID + 1);
+
+			System.out.println("Comparing " + currentExp.data + " VS " + currentAct.data + "   ((" + currentExp.data.equals(currentAct.data));
+			return currentExp.data.equals(currentAct.data);
 		}
-		return false;
+
+		//RECURSIVE Case
+		for (NLPTreeNode<T> exp_child : currentExp.children){
+			if (!compare_diffStructure(exp_child, currentAct, lastAct))
+				return false;
+		}
+
+		if(currentAct.tokenID <= lastAct.tokenID){
+			/*
+			if there are remaining tokens that are not ignored
+				return false
+			 */
+		}
+
+		return true;
 	}
+
 	public boolean isIgnore(T word){
 		if (stop_word.contains(word))
 			return true;
@@ -79,6 +102,8 @@ public class newCompare<T> {
 		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest rate");
 
 		System.out.println(compare.compare_sameStructure(test_exp.get(0), test_act.get(0)));
+		System.out.println("-----------------------------------------------------");
+		System.out.println(compare.compare_diffStructure(test_exp.get(0), test_act.get(0), test_act.get(test_act.size()-1)));
 	}
 
 	
