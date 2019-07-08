@@ -35,6 +35,17 @@ public class compareNLPTree<T> {
 		actNLPTree.printWholeTree();
 		
 		System.out.println("------------------------------------");
+		expNLPTree.assignNextToken();
+		for(NLPTreeNode<String> token : expNLPTree.getRoot().leafNodeList()) {
+			if(token.nextToken != null) {
+				System.out.println("tokenData = " + token.data + " | nextTokenData = " + token.nextToken.data);
+			} else {
+				System.out.println("tokenData = " + token.data + " | nextTokenData = " + null);
+			}
+		}
+		
+		/*
+		System.out.println("------------------------------------");
 		System.out.println(expNLPTreeList.get(7).data);
 		System.out.println(actNLPTreeList.get(7).data);
 		System.out.println("Root = " + expNLPTreeList.get(7).getRoot().data);
@@ -54,5 +65,7 @@ public class compareNLPTree<T> {
 		for(NLPTreeNode<String> node :actNLPTree.leafNodeList()) {
 			System.out.println(node.data);
 		}
+		*/
+		
 	}
 }
