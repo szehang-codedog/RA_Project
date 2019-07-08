@@ -13,6 +13,7 @@ public class NLPTreeNode<T> {
 	int startPos, endPos;
 	NLPTreeNode<T> parent;
 	List<NLPTreeNode<T>> children;
+	NLPTreeNode<T> nextToken;
 	String compOptions;
 
 	public NLPTreeNode(T data, String type) {
@@ -125,6 +126,9 @@ public class NLPTreeNode<T> {
 
 	// public
 
+	
+	
+	//CHECKER//
 	public boolean isLeaf() {
 		if (this.type.compareTo("data") == 0) {
 			return true;
@@ -133,6 +137,15 @@ public class NLPTreeNode<T> {
 		}
 	}
 	
+	public boolean isLastToken() { //check the current token is the last token or not
+		if(this.nextToken == null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	//GETTER//
 	public NLPTreeNode<T> getRoot() {
 		if(this.parent == null) {
 			return this;
@@ -141,7 +154,13 @@ public class NLPTreeNode<T> {
 		}
 	}
 	
+	public NLPTreeNode<T> getFirstToken() { //get the first token of tree
+		return this.getRoot().leafNodeList().get(0);
+	}
 	
+	public NLPTreeNode<T> getLastToken() { //get the last token of tree
+		return this.getRoot().leafNodeList().get(this.getRoot().leafNodeList().size() - 1);
+	}
 	
 	//ID ASSIGNMENT//
 	
@@ -171,9 +190,18 @@ public class NLPTreeNode<T> {
 		
 	}
 	
+	public void assignNextToken() {
+		List<NLPTreeNode<T>> tokenList = this.getRoot().leafNodeList();
+		for(int i = 0 ; i < tokenList.size() - 1; i++) {
+			tokenList.get(i).nextToken = tokenList.get(i + 1); 
+		}
+		tokenList.get(tokenList.size() - 1).nextToken = null;
+	}
+	
 	public void initialAssign() {
 		this.assignChildId();
 		this.assignTokenId();
+		this.assignNextToken();
 	}
 
 }
