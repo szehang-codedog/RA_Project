@@ -14,6 +14,7 @@ public class NLPTreeNode<T> {
 	NLPTreeNode<T> parent;
 	List<NLPTreeNode<T>> children;
 	NLPTreeNode<T> nextToken;
+	NLPTreeNode<T> previousToken;
 	String compOptions;
 
 	public NLPTreeNode(T data, String type) {
@@ -86,7 +87,7 @@ public class NLPTreeNode<T> {
 		this.assignChildId();
 		this.assignTokenId();
 		int level = 0;
-		System.out.println(this.data + " " + this.tokenID);
+		System.out.println(this.data + " " + this.childID);
 		level++;
 		if (!this.children.isEmpty()) {
 			for (NLPTreeNode<T> child : this.children)
@@ -98,7 +99,7 @@ public class NLPTreeNode<T> {
 		for (int i = 0; i < level; i++) {
 			System.out.print("	");
 		}
-		System.out.println(this.data + " " + this.tokenID);
+		System.out.println(this.data + " " + this.childID);
 		level++;
 		if (!this.children.isEmpty()) {
 			for (NLPTreeNode<T> child : this.children)
@@ -198,10 +199,19 @@ public class NLPTreeNode<T> {
 		tokenList.get(tokenList.size() - 1).nextToken = null;
 	}
 	
+	public void assignPreviousToken() {
+		List<NLPTreeNode<T>> tokenList = this.getRoot().leafNodeList();
+		for(int i = 1 ; i < tokenList.size(); i++) {
+			tokenList.get(i).previousToken = tokenList.get(i - 1); 
+		}
+		tokenList.get(0).nextToken = null;
+	}
+	
 	public void initialAssign() {
 		this.assignChildId();
 		this.assignTokenId();
 		this.assignNextToken();
+		this.assignPreviousToken();
 	}
 
 }
