@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class newCompare<T> {
 	ArrayList<String> stop_word = new ArrayList<String>(Arrays.asList("the", "of", "between"));
+	NLPTreeNode<T> next_Actual_pbRef;
+	int DEBUG = 1;
 
 	public boolean compare_sameStructure(NLPTreeNode<T> currentExp, NLPTreeNode<T> currentAct) {
 		try {
@@ -22,10 +24,9 @@ public class newCompare<T> {
 
 			// RECURSIVE case
 			boolean match = true;
-			for (int i = 0; i < currentExp.children.size(); i++) {
-				NLPTreeNode<T> exp_child = currentExp.children.get(i);
-				NLPTreeNode<T> act_child = currentAct.children.get(i);
-				//System.out.println("exp_child = " + exp_child.data + " | act_child = " + act_child.data );//DEBUG
+			for (NLPTreeNode<T> exp_child : currentExp.children) {
+				NLPTreeNode<T> act_child = currentAct.getRoot().leafNodeList().get(exp_child.tokenID);
+				//System.out.println("exp_child = " + exp_child.data + " | act_child = " + act_child.data ); //DEBUG
 				
 				match = match && compare_sameStructure(exp_child, act_child);
 			}
@@ -41,7 +42,8 @@ public class newCompare<T> {
 		// lastAct = the last token of the scope
 
 		// BASE case
-		System.out.println("currentExp = " + currentExp.data + " | nextAct = " + nextAct.data + " | lastAct = " + lastAct.data);//DEBUG
+		if (DEBUG == 1)
+			System.out.println("		currentExp = " + currentExp.data + " | nextAct = " + nextAct.data + " | lastAct = " + lastAct.data);//DEBUG
 		if (currentExp.isLeaf()) {
 			if (isIgnore(currentExp.data)) {
 				System.out.println("\"" + currentExp.data + "\"" + " in EXPECTED is ignored");
@@ -49,7 +51,7 @@ public class newCompare<T> {
 			}
 
 			while ((nextAct.tokenID <= lastAct.tokenID) && isIgnore(nextAct.data)) {
-				System.out.println("\"" + nextAct.data + "\"" + " in ACTUAL is ignored");
+				System.out.print("\"" + nextAct.data + "\"" + " in ACTUAL is ignored, ");
 				nextAct = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1);
 				System.out.println("\"" + nextAct.data + "\"" + " is the next NON-IGNORED token");
 			}
@@ -58,16 +60,15 @@ public class newCompare<T> {
 				System.out.println("Margin out of bound");//DEBUG
 				return false;
 			}
+			if( (nextAct.tokenID + 1) <= lastAct.tokenID)
+				next_Actual_pbRef = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1); //if no this line, it can pass the first comparison
 
-			nextAct = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1); //if no this line, it can pass the first comparison
-
-			System.out.println("Comparing " + currentExp.data + " VS " + nextAct.getRoot().leafNodeList().get(nextAct.tokenID - 1).data + "   ((" + currentExp.data.equals(nextAct.getRoot().leafNodeList().get(nextAct.tokenID - 1).data));//DEBUG
-			return currentExp.data.equals(nextAct.getRoot().leafNodeList().get(nextAct.tokenID - 1).data);// return compare(currentExp, actSeq[next_act-1])
+			System.out.println("Comparing " + currentExp.data + " VS " + nextAct.data + "   ((" + currentExp.data.equals(nextAct.data));//DEBUG
+			return currentExp.data.equals(nextAct.data);// return compare(currentExp, actSeq[next_act-1])
 
 		} else { // RECURSIVE Case
-
 			for (NLPTreeNode<T> exp_child : currentExp.children) {
-				if (!compare_diffStructure(exp_child, nextAct, lastAct))
+				if (!compare_diffStructure(exp_child, next_Actual_pbRef, lastAct))
 					return false;
 			}
 
@@ -79,6 +80,12 @@ public class newCompare<T> {
 							return false;
 						}
 					}
+				}
+				 */
+				/*
+				for (int i = nextAct.tokenID; i <= lastAct.tokenID; i++) { // for left-most available token to last token do
+					if (!isIgnore(nextAct.getRoot().leafNodeList().get(i).data))
+						return false;
 				}
 				 */
 			}
@@ -105,16 +112,16 @@ public class newCompare<T> {
 		coreNLPOutput NLPTree = new coreNLPOutput();
 		newCompare compare = new newCompare();
 		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate");
-		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest rate");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input interest of rate");
 
 		System.out.println(compare.compare_sameStructure(test_exp.get(0), test_act.get(0)));
 		System.out.println("-----------------------------------------------------");
 		
 		NLPTreeNode<String> a = test_act.get(0).getRoot().leafNodeList().get(0);
 		NLPTreeNode<String> b = test_act.get(0).getRoot().leafNodeList().get(test_act.get(0).getRoot().leafNodeList().size()-1);
-		
-		System.out.println(
-				compare.compare_diffStructure(test_exp.get(0), a, b));
+		compare.next_Actual_pbRef = a;
+
+		System.out.println(compare.compare_diffStructure(test_exp.get(0), compare.next_Actual_pbRef, b));
 	}
 
 }
