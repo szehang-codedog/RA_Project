@@ -13,7 +13,9 @@ public class newCompare<T> {
 	ArrayList<String> stop_word = new ArrayList<String>(Arrays.asList("the", "of", "between"));
 	NLPTreeNode<T> next_Actual_pbRef;
 	int DEBUG = 1;
-
+	boolean all_expToken_used = false;
+	boolean all_actToken_used = false;
+	
 	public boolean compare_sameStructure(NLPTreeNode<T> currentExp, NLPTreeNode<T> currentAct) {
 		try {
 			// BASE case
@@ -55,15 +57,37 @@ public class newCompare<T> {
 				nextAct = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1);
 				System.out.println("\"" + nextAct.data + "\"" + " is the next NON-IGNORED token");
 			}
-
+			
 			if (nextAct.tokenID > lastAct.tokenID) {
 				System.out.println("Margin out of bound");//DEBUG
 				return false;
 			}
+			
 			if( (nextAct.tokenID + 1) <= lastAct.tokenID)
 				next_Actual_pbRef = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1); //if no this line, it can pass the first comparison
 
+			
+					
+			
 			System.out.println("Comparing " + currentExp.data + " VS " + nextAct.data + "   ((" + currentExp.data.equals(nextAct.data));//DEBUG
+			
+			/////
+		
+			
+			if(currentExp.data.equals(nextAct.data) && currentExp.tokenID == currentExp.getRoot().leafNodeList().size() - 1) {
+				all_expToken_used = true;
+				//System.out.println("***" + nextAct.data + currentExp.data + " | " + currentExp.tokenID + " " +(currentExp.getRoot().leafNodeList().size() - 1));				
+				next_Actual_pbRef = nextAct;
+				System.out.println("---" + next_Actual_pbRef.data);
+			}
+			
+			/*
+			if(nextAct.data.equals(nextAct.data) && nextAct.tokenID == nextAct.getRoot().leafNodeList().size() - 1) {
+				all_actToken_used = true;
+			}
+			*/
+			/////
+			
 			return currentExp.data.equals(nextAct.data);// return compare(currentExp, actSeq[next_act-1])
 
 		} else { // RECURSIVE Case
@@ -72,23 +96,37 @@ public class newCompare<T> {
 					return false;
 			}
 
-			if (nextAct.tokenID <= lastAct.tokenID) {
-				/*
-				for (NLPTreeNode<T> token : nextAct.getRoot().leafNodeList()) {
-					if (token.tokenID > nextAct.tokenID) {
+			///*
+			//System.out.println("should not show");//DEBUG
+			System.out.println("all_expToken_used= = =" + all_expToken_used);//DEBUG
+			//System.out.println("all_actToken_used= = =" + all_actToken_used);//DEBUG
+			
+			//System.out.println(next_Actual_pbRef.data + " " + lastAct.data);
+			
+			if (next_Actual_pbRef.tokenID < lastAct.tokenID && all_expToken_used) {				
+				for (NLPTreeNode<T> token : next_Actual_pbRef.getRoot().leafNodeList()) {
+					if (token.tokenID > next_Actual_pbRef.tokenID) {
+						System.out.println(token.data);
 						if (!isIgnore(token.data)) {
+							System.out.print("unuse act_token is/are not ignore: ");//DEBUG
+							while(token != null) {
+								System.out.print(token.data + " ");
+								token = token.nextToken;
+							}
+							System.out.println();
 							return false;
 						}
 					}
 				}
-				 */
-				/*
-				for (int i = nextAct.tokenID; i <= lastAct.tokenID; i++) { // for left-most available token to last token do
-					if (!isIgnore(nextAct.getRoot().leafNodeList().get(i).data))
-						return false;
-				}
-				 */
+				
+				
+				//for (int i = nextAct.tokenID; i <= lastAct.tokenID; i++) { // for left-most available token to last token do
+				//	if (!isIgnore(nextAct.getRoot().leafNodeList().get(i).data))
+				//		return false;
+				//}
+				 
 			}
+			//*/
 			return true;
 		}
 	}
@@ -112,7 +150,7 @@ public class newCompare<T> {
 		coreNLPOutput NLPTree = new coreNLPOutput();
 		newCompare compare = new newCompare();
 		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate");
-		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input interest of rate");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input interest of rate rate");
 
 		System.out.println(compare.compare_sameStructure(test_exp.get(0), test_act.get(0)));
 		System.out.println("-----------------------------------------------------");
