@@ -44,13 +44,14 @@ public class newCompare<T> {
 		System.out.println("currentExp = " + currentExp.data + " | nextAct = " + nextAct.data + " | lastAct = " + lastAct.data);//DEBUG
 		if (currentExp.isLeaf()) {
 			if (isIgnore(currentExp.data)) {
+				System.out.println("\"" + currentExp.data + "\"" + " in EXPECTED is ignored");
 				return true;
 			}
 
 			while ((nextAct.tokenID <= lastAct.tokenID) && isIgnore(nextAct.data)) {
-				System.out.println(nextAct.data + " in ACTUAL is ignored");
+				System.out.println("\"" + nextAct.data + "\"" + " in ACTUAL is ignored");
 				nextAct = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1);
-				System.out.println(nextAct.data + " is the next NON-IGNORED token");
+				System.out.println("\"" + nextAct.data + "\"" + " is the next NON-IGNORED token");
 			}
 
 			if (nextAct.tokenID > lastAct.tokenID) {
@@ -64,6 +65,7 @@ public class newCompare<T> {
 			return currentExp.data.equals(nextAct.getRoot().leafNodeList().get(nextAct.tokenID - 1).data);// return compare(currentExp, actSeq[next_act-1])
 
 		} else { // RECURSIVE Case
+
 			for (NLPTreeNode<T> exp_child : currentExp.children) {
 				if (!compare_diffStructure(exp_child, nextAct, lastAct))
 					return false;
