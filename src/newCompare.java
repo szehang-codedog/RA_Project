@@ -47,19 +47,22 @@ public class newCompare<T> {
 				return true;
 			}
 
-			while ((nextAct.tokenID <= lastAct.tokenID) && isIgnore(nextAct.data))
+			while ((nextAct.tokenID <= lastAct.tokenID) && isIgnore(nextAct.data)) {
+				System.out.println(nextAct.data + " in ACTUAL is ignored");
 				nextAct = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1);
+				System.out.println(nextAct.data + " is the next NON-IGNORED token");
+			}
 
 			if (nextAct.tokenID > lastAct.tokenID) {
-				System.out.println("token bug");//DEBUG
+				System.out.println("Margin out of bound");//DEBUG
 				return false;
 			}
 
-			//nextAct = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1); //if no this line, it can pass the first comparison
-			
-			System.out.println("Comparing " + currentExp.data + " VS " + nextAct.data + "   ((" + currentExp.data.equals(nextAct.data));
-			System.out.println(currentExp.data + " " + nextAct.data + " " + currentExp.data.equals(nextAct.data));//DEBUG
-			return currentExp.data.equals(nextAct.data);// return compare(currentExp, actSeq[next_act-1])
+			nextAct = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1); //if no this line, it can pass the first comparison
+
+			System.out.println("Comparing " + currentExp.data + " VS " + nextAct.getRoot().leafNodeList().get(nextAct.tokenID - 1).data + "   ((" + currentExp.data.equals(nextAct.getRoot().leafNodeList().get(nextAct.tokenID - 1).data));//DEBUG
+			return currentExp.data.equals(nextAct.getRoot().leafNodeList().get(nextAct.tokenID - 1).data);// return compare(currentExp, actSeq[next_act-1])
+
 		} else { // RECURSIVE Case
 			for (NLPTreeNode<T> exp_child : currentExp.children) {
 				if (!compare_diffStructure(exp_child, nextAct, lastAct))
@@ -68,8 +71,6 @@ public class newCompare<T> {
 
 			if (nextAct.tokenID <= lastAct.tokenID) {
 				/*
-				 * if there are remaining tokens that are not ignored return false
-				 */
 				for (NLPTreeNode<T> token : nextAct.getRoot().leafNodeList()) {
 					if (token.tokenID > nextAct.tokenID) {
 						if (!isIgnore(token.data)) {
@@ -77,6 +78,7 @@ public class newCompare<T> {
 						}
 					}
 				}
+				 */
 			}
 			return true;
 		}
