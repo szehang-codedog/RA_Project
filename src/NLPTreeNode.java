@@ -163,6 +163,14 @@ public class NLPTreeNode<T> {
 		return this.getRoot().leafNodeList().get(this.getRoot().leafNodeList().size() - 1);
 	}
 	
+	public NLPTreeNode<T> getLeftMostLeaf() {
+		return this.leafNodeList().get(0);
+	}
+	
+	public NLPTreeNode<T> getRightMostLeaf() {
+		return this.leafNodeList().get(this.leafNodeList().size() - 1);
+	}
+	
 	//ID ASSIGNMENT//
 	
 	//should be called by the root ONLY
