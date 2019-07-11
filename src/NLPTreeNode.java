@@ -204,7 +204,7 @@ public class NLPTreeNode<T> {
 		for(int i = 1 ; i < tokenList.size(); i++) {
 			tokenList.get(i).previousToken = tokenList.get(i - 1); 
 		}
-		tokenList.get(0).nextToken = null;
+		tokenList.get(0).previousToken = null;
 	}
 	
 	public void initialAssign() {
