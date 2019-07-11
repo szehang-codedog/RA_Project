@@ -10,7 +10,7 @@ import java.util.List;
 	v_act = act_child
  */
 public class newCompare<T> {
-	ArrayList<String> stop_word = new ArrayList<String>(Arrays.asList("the", "of", "between"));
+	ArrayList<String> stop_word = new ArrayList<String>(Arrays.asList("the", "of", "between", "a"));
 	NLPTreeNode<T> next_Actual_pbRef;
 	int DEBUG = 1;
 	boolean all_expToken_used = false;
@@ -67,20 +67,17 @@ public class newCompare<T> {
 				next_Actual_pbRef = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1); //if no this line, it can pass the first comparison
 
 			
-					
-			
 			System.out.println("Comparing " + currentExp.data + " VS " + nextAct.data + "   ((" + currentExp.data.equals(nextAct.data));//DEBUG
-			
-			/////
-		
-			
+
 			if(currentExp.data.equals(nextAct.data) && currentExp.tokenID == currentExp.getRoot().leafNodeList().size() - 1) {
 				all_expToken_used = true;
 				//System.out.println("***" + nextAct.data + currentExp.data + " | " + currentExp.tokenID + " " +(currentExp.getRoot().leafNodeList().size() - 1));				
 				next_Actual_pbRef = nextAct;
 				System.out.println("---" + next_Actual_pbRef.data);
 			}
-			
+
+			if(!all_expToken_used && nextAct.nextToken==null)
+				return false;
 			/*
 			if(nextAct.data.equals(nextAct.data) && nextAct.tokenID == nextAct.getRoot().leafNodeList().size() - 1) {
 				all_actToken_used = true;
@@ -96,9 +93,10 @@ public class newCompare<T> {
 					return false;
 			}
 
+
 			///*
 			//System.out.println("should not show");//DEBUG
-			System.out.println("all_expToken_used= = =" + all_expToken_used);//DEBUG
+			System.out.println("	all_expToken_used = " + all_expToken_used);//DEBUG
 			//System.out.println("all_actToken_used= = =" + all_actToken_used);//DEBUG
 			
 			//System.out.println(next_Actual_pbRef.data + " " + lastAct.data);
@@ -150,15 +148,16 @@ public class newCompare<T> {
 		coreNLPOutput NLPTree = new coreNLPOutput();
 		newCompare compare = new newCompare();
 		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate");
-		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input interest of rate rate");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input interest rate please");
 
+		//Case One: Same structure
 		System.out.println(compare.compare_sameStructure(test_exp.get(0), test_act.get(0)));
 		System.out.println("-----------------------------------------------------");
-		
+
+		//Case Two: Different structure, no SS
 		NLPTreeNode<String> a = test_act.get(0).getRoot().leafNodeList().get(0);
 		NLPTreeNode<String> b = test_act.get(0).getRoot().leafNodeList().get(test_act.get(0).getRoot().leafNodeList().size()-1);
 		compare.next_Actual_pbRef = a;
-
 		System.out.println(compare.compare_diffStructure(test_exp.get(0), compare.next_Actual_pbRef, b));
 	}
 
