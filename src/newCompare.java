@@ -68,7 +68,7 @@ public class newCompare<T> {
 
 			
 			System.out.println("Comparing " + currentExp.data + " VS " + nextAct.data + "   ((" + currentExp.data.equals(nextAct.data));//DEBUG
-
+			
 			if(currentExp.data.equals(nextAct.data) && currentExp.tokenID == currentExp.getRoot().leafNodeList().size() - 1) {
 				all_expToken_used = true;
 				//System.out.println("***" + nextAct.data + currentExp.data + " | " + currentExp.tokenID + " " +(currentExp.getRoot().leafNodeList().size() - 1));				
@@ -76,8 +76,15 @@ public class newCompare<T> {
 				System.out.println("---" + next_Actual_pbRef.data);
 			}
 
-			if(!all_expToken_used && nextAct.nextToken==null)
-				return false;
+			if(!all_expToken_used && nextAct.nextToken==null) {
+				for ( NLPTreeNode<T> token: currentExp.getRoot().leafNodeList()) {
+					if(token.tokenID > currentExp.tokenID && !isIgnore(token.data)) {
+						return false;
+					}
+				}
+			}
+			
+			
 			/*
 			if(nextAct.data.equals(nextAct.data) && nextAct.tokenID == nextAct.getRoot().leafNodeList().size() - 1) {
 				all_actToken_used = true;
@@ -89,7 +96,7 @@ public class newCompare<T> {
 
 		} else { // RECURSIVE Case
 			for (NLPTreeNode<T> exp_child : currentExp.children) {
-				if (!compare_diffStructure(exp_child, next_Actual_pbRef, lastAct))
+				if (!compare_diffStructure(exp_child, next_Actual_pbRef, lastAct))			
 					return false;
 			}
 
@@ -147,8 +154,8 @@ public class newCompare<T> {
 	public static void main(String[] args) {
 		coreNLPOutput NLPTree = new coreNLPOutput();
 		newCompare compare = new newCompare();
-		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate");
-		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input interest rate please");
+		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate of");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest rate ");
 
 		//Case One: Same structure
 		System.out.println(compare.compare_sameStructure(test_exp.get(0), test_act.get(0)));
