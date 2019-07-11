@@ -163,11 +163,11 @@ public class NLPTreeNode<T> {
 		return this.getRoot().leafNodeList().get(this.getRoot().leafNodeList().size() - 1);
 	}
 	
-	public NLPTreeNode<T> getLeftMostLeaf() {
+	public NLPTreeNode<T> getLeftMostLeaf() { //get the left most leaf in a subtree
 		return this.leafNodeList().get(0);
 	}
 	
-	public NLPTreeNode<T> getRightMostLeaf() {
+	public NLPTreeNode<T> getRightMostLeaf() { //get the right most leaf in a subtree
 		return this.leafNodeList().get(this.leafNodeList().size() - 1);
 	}
 	
