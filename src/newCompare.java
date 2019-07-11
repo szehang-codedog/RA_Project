@@ -54,6 +54,10 @@ public class newCompare<T> {
 
 			while ((nextAct.tokenID <= lastAct.tokenID) && isIgnore(nextAct.data)) {
 				System.out.print("\"" + nextAct.data + "\"" + " in ACTUAL is ignored, ");
+				if (nextAct.tokenID + 1 > nextAct.getRoot().leafNodeList().size() - 1) {
+					System.out.println("###no more actToken");//DEBUG
+					return false;
+				}
 				nextAct = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1);
 				System.out.println("\"" + nextAct.data + "\"" + " is the next NON-IGNORED token");
 			}
@@ -155,7 +159,7 @@ public class newCompare<T> {
 		coreNLPOutput NLPTree = new coreNLPOutput();
 		newCompare compare = new newCompare();
 		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate of");
-		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest rate ");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest rate");
 
 		//Case One: Same structure
 		System.out.println(compare.compare_sameStructure(test_exp.get(0), test_act.get(0)));
