@@ -34,8 +34,12 @@ public class compareNLPTree<T> {
 		test_exp.get(0).printWholeTree();
 		
 		System.out.println("------------------------------------");
-		System.out.print(test_exp.get(8).getwByLeafMostLeaf().nodeID);
+		System.out.print(test_exp.get(13).subtreeToString());
 		
+		/*//test for getwByLeafMostLeaf()
+		System.out.println("------------------------------------");
+		System.out.print(test_exp.get(8).getwByLeafMostLeaf().nodeID);
+		*/
 		
 		/*
 		System.out.println("------------------------------------");
