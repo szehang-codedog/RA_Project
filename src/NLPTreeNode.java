@@ -124,6 +124,18 @@ public class NLPTreeNode<T> {
 		return leafNode;
 		
 	}
+	
+	public String subtreeToString() {
+		String result = "";
+		for(NLPTreeNode<T> token : this.leafNodeList()) {
+			if(result.compareTo("") == 0) {
+				result = result + token.data;
+			} else {
+				result = result + " " + token.data;
+			}
+		}
+		return result;
+	}
 
 	// public
 
@@ -173,7 +185,7 @@ public class NLPTreeNode<T> {
 	
 	public NLPTreeNode<T> getwByLeafMostLeaf() {
 		NLPTreeNode<T> parent;
-		System.out.println("***" + this.data);
+		//System.out.println("***" + this.data);//DEBUG
 		if(this.parent == null) {
 			return this;
 		} else {
