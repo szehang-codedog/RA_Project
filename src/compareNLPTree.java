@@ -27,13 +27,26 @@ public class compareNLPTree<T> {
 		
 		compareNLPTree<String> compareTest = new compareNLPTree<String>(expNLPTree, actNLPTree, null);
 		
+		System.out.println("------------------------------------");
+		coreNLPOutput NLPTree = new coreNLPOutput();
+		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate of of of");
+		System.out.println("test_exp");
+		test_exp.get(0).printWholeTree();
 		
+		System.out.println("------------------------------------");
+		System.out.print(test_exp.get(8).getwByLeafMostLeaf().nodeID);
+		
+		
+		/*
 		System.out.println("------------------------------------");
 		System.out.println("expTree");
 		expNLPTree.printWholeTree();
 		System.out.println("actTree");
 		actNLPTree.printWholeTree();
+		*/
 		
+		
+		/*
 		System.out.println("------------------------------------");
 		expNLPTree.assignNextToken();
 		for(NLPTreeNode<String> token : expNLPTree.getRoot().leafNodeList()) {
@@ -43,6 +56,7 @@ public class compareNLPTree<T> {
 				System.out.println("tokenData = " + token.data + " | nextTokenData = " + null);
 			}
 		}
+		*/
 		
 		/*
 		System.out.println("------------------------------------");
