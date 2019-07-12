@@ -140,6 +140,98 @@ public class newCompare<T> {
 		}
 	}
 
+	public boolean compare_diffStructure_ss(NLPTreeNode<T> currentExp, NLPTreeNode<T> nextAct, NLPTreeNode<T> lastAct) {
+		// nextAct = the first not used token
+		// lastAct = the last token of the scope
+
+		// BASE case
+		if (DEBUG == 1)
+			System.out.println("		currentExp = " + currentExp.data + " | nextAct = " + nextAct.data + " | lastAct = " + lastAct.data);//DEBUG
+		if (currentExp.isLeaf()) {
+			if (isIgnore(currentExp.data)) {
+				System.out.println("\"" + currentExp.data + "\"" + " in EXPECTED is ignored");
+				return true;
+			}
+
+			while ((nextAct.tokenID <= lastAct.tokenID) && isIgnore(nextAct.data)) {
+				System.out.print("\"" + nextAct.data + "\"" + " in ACTUAL is ignored, ");
+				if (nextAct.tokenID + 1 > nextAct.getRoot().leafNodeList().size() - 1) {
+					System.out.println("###no more actToken");//DEBUG
+					return false;
+				}
+				nextAct = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1);
+				System.out.println("\"" + nextAct.data + "\"" + " is the next NON-IGNORED token");
+			}
+			
+			if (nextAct.tokenID > lastAct.tokenID) {
+				System.out.println("Margin out of bound");//DEBUG
+				return false;
+			}
+			
+			if( (nextAct.tokenID + 1) <= lastAct.tokenID)
+				next_Actual_pbRef = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1); //if no this line, it can pass the first comparison
+
+			
+			System.out.println("Comparing " + currentExp.data + " VS " + nextAct.data + "   ((" + currentExp.data.equals(nextAct.data));//DEBUG
+			
+			if(currentExp.data.equals(nextAct.data) && currentExp.tokenID == currentExp.getRoot().leafNodeList().size() - 1) {
+				all_expToken_used = true;
+				//System.out.println("***" + nextAct.data + currentExp.data + " | " + currentExp.tokenID + " " +(currentExp.getRoot().leafNodeList().size() - 1));				
+				next_Actual_pbRef = nextAct;
+				System.out.println("---" + next_Actual_pbRef.data);
+			}
+
+			if(!all_expToken_used && nextAct.nextToken==null) {
+				for ( NLPTreeNode<T> token: currentExp.getRoot().leafNodeList()) {
+					if(token.tokenID > currentExp.tokenID && !isIgnore(token.data)) {
+						return false;
+					}
+				}
+			}
+			
+			
+			/*
+			if(nextAct.data.equals(nextAct.data) && nextAct.tokenID == nextAct.getRoot().leafNodeList().size() - 1) {
+				all_actToken_used = true;
+			}
+			*/
+			/////
+			
+			return currentExp.data.equals(nextAct.data);// return compare(currentExp, actSeq[next_act-1])
+
+		} else { // RECURSIVE Case
+			PhraseSimilarity sim = new PhraseSimilarity();
+			
+			//handling SS(alpha)
+			NLPTreeNode<T> w = nextAct.getwByLeafMostLeaf();
+			System.out.println("wData : " + w.data);//DEBUG
+			NLPTreeNode<T> wPrime = w;
+			boolean found = false;
+			
+			while(!found) {
+				if(wPrime == null) { //*********getwByLeafMostLeaf() will not return NULL, waiting for fix
+					return false;
+				}
+				if(sim.phraseSim(currentExp.subtreeToString(), wPrime.subtreeToString()) >= alpha) {
+					found = true;
+				} else {
+					if (wPrime.isLeaf()) {
+						wPrime = null;
+					} else {
+						wPrime = wPrime.children.get(0);
+					}
+				}
+			}
+			lastAct = wPrime.getRightMostLeaf();
+			
+			//code below are  the same as case 2 above
+			////////////////////////////WORK STOP HERE LAST TIME////////////////////////
+			
+			return true;
+		}
+	}
+
+	
 	public boolean isIgnore(T word) {
 		if (stop_word.contains(word))
 			return true;
@@ -170,6 +262,9 @@ public class newCompare<T> {
 		NLPTreeNode<String> b = test_act.get(0).getRoot().leafNodeList().get(test_act.get(0).getRoot().leafNodeList().size()-1);
 		compare.next_Actual_pbRef = a;
 		System.out.println(compare.compare_diffStructure(test_exp.get(0), compare.next_Actual_pbRef, b));
+	
+		//Case Three: Different structure with SS(alpha)
+		
 	}
 
 }
