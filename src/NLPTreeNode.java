@@ -87,7 +87,7 @@ public class NLPTreeNode<T> {
 		this.assignChildId();
 		this.assignTokenId();
 		int level = 0;
-		System.out.println(this.data + " " + this.childID);
+		System.out.println(this.data + " " + this.nodeID);
 		level++;
 		if (!this.children.isEmpty()) {
 			for (NLPTreeNode<T> child : this.children)
@@ -99,7 +99,7 @@ public class NLPTreeNode<T> {
 		for (int i = 0; i < level; i++) {
 			System.out.print("	");
 		}
-		System.out.println(this.data + " " + this.childID);
+		System.out.println(this.data + " " + this.nodeID);
 		level++;
 		if (!this.children.isEmpty()) {
 			for (NLPTreeNode<T> child : this.children)
@@ -169,6 +169,21 @@ public class NLPTreeNode<T> {
 	
 	public NLPTreeNode<T> getRightMostLeaf() { //get the right most leaf in a subtree
 		return this.leafNodeList().get(this.leafNodeList().size() - 1);
+	}
+	
+	public NLPTreeNode<T> getwByLeafMostLeaf() {
+		NLPTreeNode<T> parent;
+		System.out.println("***" + this.data);
+		if(this.parent == null) {
+			return this;
+		} else {
+			parent = this.parent;
+			if(parent.children.get(0) != this) {
+				return this;
+			} else {
+				return parent.getwByLeafMostLeaf();
+			}
+		}
 	}
 	
 	//ID ASSIGNMENT//
