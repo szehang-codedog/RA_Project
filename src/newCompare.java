@@ -224,7 +224,44 @@ public class newCompare<T> {
 			}
 			lastAct = wPrime.getRightMostLeaf();
 			
-			//code below are  the same as case 2 above
+			//code below are  the same as case 2 above //not test yet//copy only
+			for (NLPTreeNode<T> exp_child : currentExp.children) {
+				if (!compare_diffStructure(exp_child, next_Actual_pbRef, lastAct))			
+					return false;
+			}
+
+
+			///*
+			//System.out.println("should not show");//DEBUG
+			System.out.println("	all_expToken_used = " + all_expToken_used);//DEBUG
+			//System.out.println("all_actToken_used= = =" + all_actToken_used);//DEBUG
+			
+			//System.out.println(next_Actual_pbRef.data + " " + lastAct.data);
+			
+			if (next_Actual_pbRef.tokenID < lastAct.tokenID && all_expToken_used) {				
+				for (NLPTreeNode<T> token : next_Actual_pbRef.getRoot().leafNodeList()) {
+					if (token.tokenID > next_Actual_pbRef.tokenID) {
+						System.out.println(token.data);
+						if (!isIgnore(token.data)) {
+							System.out.print("unuse act_token is/are not ignore: ");//DEBUG
+							while(token != null) {
+								System.out.print(token.data + " ");
+								token = token.nextToken;
+							}
+							System.out.println();
+							return false;
+						}
+					}
+				}
+				
+				
+				//for (int i = nextAct.tokenID; i <= lastAct.tokenID; i++) { // for left-most available token to last token do
+				//	if (!isIgnore(nextAct.getRoot().leafNodeList().get(i).data))
+				//		return false;
+				//}
+				 
+			}
+			//*/
 			////////////////////////////WORK STOP HERE LAST TIME////////////////////////
 			
 			return true;
