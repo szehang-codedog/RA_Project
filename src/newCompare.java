@@ -49,6 +49,8 @@ public class newCompare<T> {
 		if (currentExp.isLeaf()) {
 			if (isIgnore(currentExp.data)) {
 				System.out.println("\"" + currentExp.data + "\"" + " in EXPECTED is ignored");
+				if(currentExp.nextToken == null)
+				    return false;
 				return true;
 			}
 
@@ -80,15 +82,14 @@ public class newCompare<T> {
 				System.out.println("---" + next_Actual_pbRef.data);
 			}
 
-			if(!all_expToken_used && nextAct.nextToken==null) {
+			if (!all_expToken_used && nextAct.nextToken==null) {
 				for ( NLPTreeNode<T> token: currentExp.getRoot().leafNodeList()) {
 					if(token.tokenID > currentExp.tokenID && !isIgnore(token.data)) {
 						return false;
 					}
 				}
 			}
-			
-			
+
 			/*
 			if(nextAct.data.equals(nextAct.data) && nextAct.tokenID == nextAct.getRoot().leafNodeList().size() - 1) {
 				all_actToken_used = true;
@@ -141,6 +142,7 @@ public class newCompare<T> {
 	}
 
 	public boolean compare_diffStructure_ss(NLPTreeNode<T> currentExp, NLPTreeNode<T> nextAct, NLPTreeNode<T> lastAct) {
+		double alpha = 0.8;
 		// nextAct = the first not used token
 		// lastAct = the last token of the scope
 
@@ -150,6 +152,8 @@ public class newCompare<T> {
 		if (currentExp.isLeaf()) {
 			if (isIgnore(currentExp.data)) {
 				System.out.println("\"" + currentExp.data + "\"" + " in EXPECTED is ignored");
+                if(currentExp.nextToken == null)
+                    return false;
 				return true;
 			}
 
@@ -167,7 +171,8 @@ public class newCompare<T> {
 				System.out.println("Margin out of bound");//DEBUG
 				return false;
 			}
-			
+
+
 			if( (nextAct.tokenID + 1) <= lastAct.tokenID)
 				next_Actual_pbRef = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1); //if no this line, it can pass the first comparison
 
@@ -203,13 +208,13 @@ public class newCompare<T> {
 			PhraseSimilarity sim = new PhraseSimilarity();
 			
 			//handling SS(alpha)
-			NLPTreeNode<T> w = nextAct.getwByLeafMostLeaf();
+			NLPTreeNode<T> w = nextAct.getwByLeftMostLeaf();
 			System.out.println("wData : " + w.data);//DEBUG
 			NLPTreeNode<T> wPrime = w;
 			boolean found = false;
 			
 			while(!found) {
-				if(wPrime == null) { //*********getwByLeafMostLeaf() will not return NULL, waiting for fix
+				if(wPrime == null) { //*********getwByLeftMostLeaf() will not return NULL, waiting for fix
 					return false;
 				}
 				if(sim.phraseSim(currentExp.subtreeToString(), wPrime.subtreeToString()) >= alpha) {
@@ -287,20 +292,33 @@ public class newCompare<T> {
 	public static void main(String[] args) {
 		coreNLPOutput NLPTree = new coreNLPOutput();
 		newCompare compare = new newCompare();
-		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate of");
-		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest rate");
+
+		int test_case = 3;
+		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("A is a apple of");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("A is a of apple the apple of");
 
 		//Case One: Same structure
-		System.out.println(compare.compare_sameStructure(test_exp.get(0), test_act.get(0)));
-		System.out.println("-----------------------------------------------------");
+        if (test_case == 1){
+            System.out.println(compare.compare_sameStructure(test_exp.get(0), test_act.get(0)));
+            System.out.println("-----------------------------------------------------");
+
+        }
 
 		//Case Two: Different structure, no SS
-		NLPTreeNode<String> a = test_act.get(0).getRoot().leafNodeList().get(0);
-		NLPTreeNode<String> b = test_act.get(0).getRoot().leafNodeList().get(test_act.get(0).getRoot().leafNodeList().size()-1);
-		compare.next_Actual_pbRef = a;
-		System.out.println(compare.compare_diffStructure(test_exp.get(0), compare.next_Actual_pbRef, b));
-	
+        if (test_case == 2){
+            NLPTreeNode<String> a = test_act.get(0).getRoot().leafNodeList().get(0);
+            NLPTreeNode<String> b = test_act.get(0).getRoot().leafNodeList().get(test_act.get(0).getRoot().leafNodeList().size()-1);
+            compare.next_Actual_pbRef = a;
+            System.out.println(compare.compare_diffStructure(test_exp.get(0), compare.next_Actual_pbRef, b));
+        }
 		//Case Three: Different structure with SS(alpha)
+        if (test_case == 3){
+            NLPTreeNode<String> a = test_act.get(0).getRoot().leafNodeList().get(0);
+            NLPTreeNode<String> b = test_act.get(0).getRoot().leafNodeList().get(test_act.get(0).getRoot().leafNodeList().size()-1);
+            compare.next_Actual_pbRef = a;
+            System.out.println(compare.compare_diffStructure_ss(test_exp.get(0), compare.next_Actual_pbRef, b));
+        }
+
 		
 	}
 

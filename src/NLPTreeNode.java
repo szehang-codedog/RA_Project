@@ -183,7 +183,7 @@ public class NLPTreeNode<T> {
 		return this.leafNodeList().get(this.leafNodeList().size() - 1);
 	}
 	
-	public NLPTreeNode<T> getwByLeafMostLeaf() {
+	public NLPTreeNode<T> getwByLeftMostLeaf() {
 		NLPTreeNode<T> parent;
 		//System.out.println("***" + this.data);//DEBUG
 		if(this.parent == null) {
@@ -193,7 +193,7 @@ public class NLPTreeNode<T> {
 			if(parent.children.get(0) != this) {
 				return this;
 			} else {
-				return parent.getwByLeafMostLeaf();
+				return parent.getwByLeftMostLeaf();
 			}
 		}
 	}
