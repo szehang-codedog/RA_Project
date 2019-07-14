@@ -18,11 +18,9 @@ public class ReadFileAndBuildTrees {
 	String[] vBoundaries;
 	String[] blockTypes;
 
-	double similarity;
-	int[] sim_path;
-
-	int[] unorder;
-	int[] unorder_path;
+	String[] rules;
+	List<String> sim_rules = new ArrayList<>();
+	List<String> order_rules = new ArrayList<>();
 
 	List<String> ruleLevel;
 	List<String> ruleLevelId;
@@ -113,8 +111,7 @@ public class ReadFileAndBuildTrees {
 		String[] options = lines[7].split(";");
 
 		// read the matching rule
-		String[] rules = lines[8].split(";");
-
+		rules = lines[8].split(";");
 		/*
 		 * List<String[]> rule = new ArrayList<String[]>();
 		 * 
@@ -161,6 +158,17 @@ public class ReadFileAndBuildTrees {
 			}
 		}
 
+		for (String rule : rules){
+			if (rule.startsWith("s")){
+				sim_rules.add(rule.split(":")[1] + ":" + rule.split(":")[2]);
+			}
+
+			if (rule.startsWith("u")){
+				order_rules.add(rule.split(":")[1] + ":" + rule.split(":")[2]);
+			}
+		}
+
+		/*
 		for (String rule : rules) {
 			if (rule.startsWith("s")) {
 				if (rule.trim().split("=").length == 2) {
@@ -185,11 +193,11 @@ public class ReadFileAndBuildTrees {
 				}
 			}
 		}
-
-		System.out.println("Similarity = " + similarity);
-		System.out.println("Sim path = " + Arrays.toString(sim_path));
-		System.out.println("Unorder = " + Arrays.toString(unorder));
-		System.out.println("Unorder path = " + Arrays.toString(unorder_path));
+		*/
+		if (debugLevel == 1) {
+			System.out.println("Rules = " + String.join(", ", sim_rules));
+			System.out.println("Orders = " + String.join(", ", order_rules));
+		}
 
 		int processedOutputCount = 0;
 		for (int i = BEGIN_LINE; i < lines.length; i++) {
@@ -285,6 +293,7 @@ public class ReadFileAndBuildTrees {
 					// to be substituted by NLP algorithm
 
 					coreNLPOutput core = new coreNLPOutput();
+					newCompare compare = new newCompare();
 					PhraseSimilarity ps = new PhraseSimilarity();
 					double two_phrase_sim = 0;
 
