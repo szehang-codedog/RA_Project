@@ -209,6 +209,54 @@ public class newCompare<T> {
 		} else { // RECURSIVE Case
 			PhraseSimilarity sim = new PhraseSimilarity();
 			
+			/////testing
+			//check sim_rules
+			for (String rule : sim_rules) {
+				String path = rule.split(":")[0];
+				double alpha = Double.parseDouble(rule.split(":")[1]);
+				
+				NLPTreeNode<T> exp = currentExp.getRoot();
+				for(String step : path.split(",")) {
+					try {
+						exp = exp.children.get(Integer.parseInt(step));
+					} catch(Exception err) {
+						System.out.println("^^^^^the related node is not exist");//DEBUG
+					}
+					
+				}
+				System.out.println("$$$$$$$$$$$the target expNodeData:" + exp.data + " nodeID:" + exp.nodeID);//DEBUG
+				System.out.println("$$$$$$$$$$$the current expNodeData:" + currentExp.data + " nodeID:" + currentExp.nodeID);//DEBUG
+				if (exp.nodeID == currentExp.nodeID) {
+					//handling SS(alpha)
+					System.out.println("************handling ss");
+					NLPTreeNode<T> w = nextAct.getwByLeftMostLeaf();
+					System.out.println("wData : " + w.data);//DEBUG
+					NLPTreeNode<T> wPrime = w;
+					boolean found = false;
+					
+					while(!found) {
+						if(wPrime == null) { //*********getwByLeftMostLeaf() will not return NULL, waiting for fix
+							return false;
+						}
+						if(sim.phraseSim(currentExp.subtreeToString(), wPrime.subtreeToString()) >= alpha) {
+							System.out.println("%%%%%%%%%%%%%" + currentExp.subtreeToString());
+							System.out.println("%%%%%%%%%%%%%" + wPrime.subtreeToString());
+							System.out.println("%%%%%%%%%%%%%sim:" + sim.phraseSim(currentExp.subtreeToString(), wPrime.subtreeToString()) + " alpha:" + alpha);
+							found = true;
+						} else {
+							if (wPrime.isLeaf()) {
+								wPrime = null;
+							} else {
+								wPrime = wPrime.children.get(0);
+							}
+						}
+					}
+					lastAct = wPrime.getRightMostLeaf();
+				}
+			}
+			/////
+			
+			/* copied and using in other part//here is a backup code 
 			//handling SS(alpha)
 			NLPTreeNode<T> w = nextAct.getwByLeftMostLeaf();
 			System.out.println("wData : " + w.data);//DEBUG
@@ -230,10 +278,11 @@ public class newCompare<T> {
 				}
 			}
 			lastAct = wPrime.getRightMostLeaf();
+			*/
 			
 			//code below are  the same as case 2 above //not test yet//copy only
 			for (NLPTreeNode<T> exp_child : currentExp.children) {
-				if (!compare_diffStructure(exp_child, next_Actual_pbRef, lastAct))			
+				if (!compare_diffStructure_ss(exp_child, next_Actual_pbRef, lastAct, sim_rules, order_rules))//not sure for this line, should it call different structure or different structure with ss 
 					return false;
 			}
 
@@ -295,15 +344,19 @@ public class newCompare<T> {
 		coreNLPOutput NLPTree = new coreNLPOutput();
 		newCompare compare = new newCompare();
 
-		int test_case = 2;
+		int test_case = 3;
 		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate");
 		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest of rate");
 
+        System.out.println("exp: " + test_exp.get(0).subtreeToString());
+        test_exp.get(0).printWholeTree();
+        System.out.println("act: " + test_act.get(0).subtreeToString());
+        test_act.get(0).printWholeTree();
+        System.out.println("-----------------------------------------------------");
+        
 		//Case One: Same structure
         if (test_case == 1){
             System.out.println(compare.compare_sameStructure(test_exp.get(0), test_act.get(0)));
-            System.out.println("-----------------------------------------------------");
-
         }
 
 		//Case Two: Different structure, no SS
@@ -317,7 +370,7 @@ public class newCompare<T> {
             NLPTreeNode<String> a = test_act.get(0).getRoot().leafNodeList().get(0); // First Token
             NLPTreeNode<String> b = test_act.get(0).getRoot().leafNodeList().get(test_act.get(0).getRoot().leafNodeList().size()-1); // Last Token
 
-            List<String> sim_rules = Arrays.asList("1,1,2:0.7");
+            List<String> sim_rules = Arrays.asList("0,0,1:0.7", "0,0,0:0.6");
             List<String> order_rules = Arrays.asList("1,1,2:1,2,3");
 
             System.out.println(compare.compare_diffStructure_ss(test_exp.get(0), a, b, sim_rules, order_rules));
