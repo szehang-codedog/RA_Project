@@ -298,7 +298,7 @@ public class newCompare<T> {
 			
 			//code below are  the same as case 2 above //not test yet//copy only
 			for (NLPTreeNode<T> exp_child : currentExp.children) {
-				if (!compare_diffStructure_ss(exp_child, next_Actual_pbRef, lastAct, sim_rules, order_rules))//not sure for this line, should it call different structure or different structure with ss 
+				if (!compare_diffStructure_ss(exp_child, next_Actual_pbRef, last_Actual_pbRef, sim_rules, order_rules))//not sure for this line, should it call different structure or different structure with ss
 					return false;
 			}
 
@@ -310,7 +310,7 @@ public class newCompare<T> {
 			
 			//System.out.println(next_Actual_pbRef.data + " " + lastAct.data);
 			
-			if (next_Actual_pbRef.tokenID < lastAct.tokenID && all_expToken_used) {				
+			if (next_Actual_pbRef.tokenID < last_Actual_pbRef.tokenID && all_expToken_used) {
 				for (NLPTreeNode<T> token : next_Actual_pbRef.getRoot().leafNodeList()) {
 					if (token.tokenID > next_Actual_pbRef.tokenID) {
 						System.out.println(token.data);
@@ -362,7 +362,7 @@ public class newCompare<T> {
 
 		int test_case = 3;
 		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate");
-		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest of rate please");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest of rate for the sake of god");
 
         System.out.println("exp: " + test_exp.get(0).subtreeToString());
         test_exp.get(0).printWholeTree();
