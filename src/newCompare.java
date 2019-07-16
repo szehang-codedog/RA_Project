@@ -12,6 +12,8 @@ import java.util.List;
 public class newCompare<T> {
 	ArrayList<String> stop_word = new ArrayList<String>(Arrays.asList("the", "of", "between", "a"));
 	NLPTreeNode<T> next_Actual_pbRef;
+	NLPTreeNode<T> last_Actual_pbRef;
+
 	int DEBUG = 1;
 	boolean all_expToken_used = false;
 	boolean all_actToken_used = false;
@@ -147,6 +149,7 @@ public class newCompare<T> {
 		// nextAct = the first not used token
 		// lastAct = the last token of the scope
         next_Actual_pbRef = nextAct;
+		last_Actual_pbRef = lastAct;
 
         // BASE case
 		if (DEBUG == 1)
@@ -211,6 +214,7 @@ public class newCompare<T> {
 			
 			/////testing
 			//check sim_rules
+			/*
 			for (String rule : sim_rules) {
 				String path = rule.split(":")[0];
 				double alpha = Double.parseDouble(rule.split(":")[1]);
@@ -231,54 +235,66 @@ public class newCompare<T> {
 					System.out.println("************handling ss");
 					NLPTreeNode<T> w = nextAct.getwByLeftMostLeaf();
 					System.out.println("wData : " + w.data);//DEBUG
-					NLPTreeNode<T> wPrime = w;
+					NLPTreeNode<T> w = w;
 					boolean found = false;
 					
 					while(!found) {
-						if(wPrime == null) { //*********getwByLeftMostLeaf() will not return NULL, waiting for fix
+						if(w == null) { //*********getwByLeftMostLeaf() will not return NULL, waiting for fix
 							return false;
 						}
-						if(sim.phraseSim(currentExp.subtreeToString(), wPrime.subtreeToString()) >= alpha) {
+						if(sim.phraseSim(currentExp.subtreeToString(), w.subtreeToString()) >= alpha) {
 							System.out.println("%%%%%%%%%%%%%" + currentExp.subtreeToString());
-							System.out.println("%%%%%%%%%%%%%" + wPrime.subtreeToString());
-							System.out.println("%%%%%%%%%%%%%sim:" + sim.phraseSim(currentExp.subtreeToString(), wPrime.subtreeToString()) + " alpha:" + alpha);
+							System.out.println("%%%%%%%%%%%%%" + w.subtreeToString());
+							System.out.println("%%%%%%%%%%%%%sim:" + sim.phraseSim(currentExp.subtreeToString(), w.subtreeToString()) + " alpha:" + alpha);
 							found = true;
 						} else {
-							if (wPrime.isLeaf()) {
-								wPrime = null;
+							if (w.isLeaf()) {
+								w = null;
 							} else {
-								wPrime = wPrime.children.get(0);
+								w = w.children.get(0);
 							}
 						}
 					}
-					lastAct = wPrime.getRightMostLeaf();
+					lastAct = w.getRightMostLeaf();
 				}
 			}
+			 */
 			/////
-			
-			/* copied and using in other part//here is a backup code 
+
 			//handling SS(alpha)
-			NLPTreeNode<T> w = nextAct.getwByLeftMostLeaf();
-			System.out.println("wData : " + w.data);//DEBUG
-			NLPTreeNode<T> wPrime = w;
-			boolean found = false;
-			
-			while(!found) {
-				if(wPrime == null) { //*********getwByLeftMostLeaf() will not return NULL, waiting for fix
-					return false;
-				}
-				if(sim.phraseSim(currentExp.subtreeToString(), wPrime.subtreeToString()) >= alpha) {
-					found = true;
-				} else {
-					if (wPrime.isLeaf()) {
-						wPrime = null;
-					} else {
-						wPrime = wPrime.children.get(0);
+			for (String rule : sim_rules){
+				if (currentExp.nodeID == Integer.parseInt(rule.split(":")[0])){
+					System.out.println("Node " + currentExp.data + " need to handle SS...");
+					NLPTreeNode<T> w = nextAct.getwByLeftMostLeaf();
+					System.out.println("wData : " + w.data + ", " + w.subtreeToString() + ", " + w.nodeID);//DEBUG
+					boolean found = false;
+
+					while(!found) {
+						if(w == null) { //*********getwByLeftMostLeaf() will not return NULL, waiting for fix
+							return false;
+						}
+
+						double phraseSim = sim.phraseSim(currentExp.subtreeToString(), w.subtreeToString());
+
+						System.out.println("  UMBC( " + currentExp.subtreeToString() + " , " + w.subtreeToString() + " ) ==> " + phraseSim);
+
+						if(phraseSim >= Double.parseDouble(rule.split(":")[1])) {
+							System.out.println("     Score is high enough, will be continued");
+							found = true;
+						} else {
+							if (w.isLeaf()) {
+								System.out.println("     Reached leaf but still not enough score");
+								w = null;
+							} else {
+								w = w.children.get(0);
+							}
+						}
 					}
+					last_Actual_pbRef = w.getRightMostLeaf();
 				}
 			}
-			lastAct = wPrime.getRightMostLeaf();
-			*/
+
+
 			
 			//code below are  the same as case 2 above //not test yet//copy only
 			for (NLPTreeNode<T> exp_child : currentExp.children) {
@@ -346,7 +362,7 @@ public class newCompare<T> {
 
 		int test_case = 3;
 		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate");
-		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest of rate");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("Input the interest of rate please");
 
         System.out.println("exp: " + test_exp.get(0).subtreeToString());
         test_exp.get(0).printWholeTree();
@@ -370,7 +386,7 @@ public class newCompare<T> {
             NLPTreeNode<String> a = test_act.get(0).getRoot().leafNodeList().get(0); // First Token
             NLPTreeNode<String> b = test_act.get(0).getRoot().leafNodeList().get(test_act.get(0).getRoot().leafNodeList().size()-1); // Last Token
 
-            List<String> sim_rules = Arrays.asList("0,0,1:0.7", "0,0,0:0.6");
+            List<String> sim_rules = Arrays.asList("5:0.8");
             List<String> order_rules = Arrays.asList("1,1,2:1,2,3");
 
             System.out.println(compare.compare_diffStructure_ss(test_exp.get(0), a, b, sim_rules, order_rules));
