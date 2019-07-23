@@ -388,7 +388,7 @@ public class newCompare<T> {
 
             List<String> sim_rules = Arrays.asList("5:0.8");
             List<String> order_rules = Arrays.asList("1,1,2:1,2,3");
-
+////////
             System.out.println(compare.compare_diffStructure_ss(test_exp.get(0), a, b, sim_rules, order_rules));
         }
 
