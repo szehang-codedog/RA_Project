@@ -524,7 +524,23 @@ public class newCompare<T> {
 						int childID = Integer.parseUnsignedInt(childIDString);
 						unoderNodes[unoderNodesIndex++] = childID;
 						permute[childID] = -1;
-					}	
+					}
+					
+					
+					
+					int[] permutesOfUONode = permute(0,unoderNodes.length, unoderNodes, null);
+					
+					/* stop at this part, let me think think
+					int pCount = 0;//counter to separate pairs 
+					for(int x : permutesOfUONode) {
+						if(pCount < permutesOfUONode.length) {
+							pCount++;
+						}
+						if(pCount % unoderNodes.length == 0) {
+							
+						}
+					}
+					stop at this part, let me think think*/
 					
 					//////////////need to change the permute() output to continue
 					
@@ -694,6 +710,10 @@ public class newCompare<T> {
         	
         	int[] all = compare.permute(i, n, a, null);
         	compare.printArray(all);
+        }
+        
+        if (test_case == 20) {
+        	
         }
 	}
 
