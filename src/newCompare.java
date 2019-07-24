@@ -591,12 +591,47 @@ public class newCompare<T> {
 		return;
 	}
 	
+	public int[] permuteA(int i, int n, int[] A, int[] allPermute) {
+		if (allPermute==null) {
+			allPermute = new int[A.length * factorial(n)];
+			Arrays.fill(allPermute, -1);
+		}
+		if(i == n-1) {
+			for(int x : A) {
+				System.out.println("added: " + x);
+				printArray(allPermute);
+				for(int j = 0; j < allPermute.length; j++) {
+					if(allPermute[j] == -1) {
+						allPermute[j] = x;
+						break;
+					}
+				}
+			}
+			return allPermute;
+		}
+		permuteA(i+1, n, A, allPermute);
+		int tmp = A[i];
+		for(int j = i+1; j<=n-1; j++) {
+			A[i] = A[j];	A[j] = tmp;
+			permuteA(i+1, n, A, allPermute);
+			A[j] = A[i];	A[i] = tmp;
+		}
+		return allPermute;
+	}
+	
 	public int factorial(int n) {
 	    int fact = 1;
 	    for (int i = 2; i <= n; i++) {
 	        fact = fact * i;
 	    }
 	    return fact;
+	}
+	
+	public void printArray(int[] a) {
+		for (int x : a) {
+			System.out.print(x + " ");
+		}
+		System.out.println();
 	}
 
 	/*
@@ -647,7 +682,12 @@ public class newCompare<T> {
 		//permute test
         if (test_case == 10){
         	int[] a = new int[] {1,2,3};
-        	compare.permute(0, 3, a);
+        	//compare.permute(0, 3, a);
+        	
+        	System.out.println("_________________________");
+        	
+        	int[] all = compare.permuteA(0, 3, a, null);
+        	compare.printArray(all);
         }
 	}
 
