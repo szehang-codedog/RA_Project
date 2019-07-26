@@ -18,6 +18,8 @@ public class test {
 		*/
 		List<int[]> a = testing.permuteTest(order_rules, currentExp);
 		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
+		System.out.println(a.size());
+		
 		for(int[] intArray : a) {
 			for(int x : intArray) {
 				System.out.print(x);
@@ -40,15 +42,23 @@ public class test {
 				for(int i = 0; i < permute.length; i++) {
 					permute[i] = i;
 				}
+//				System.out.println("the raw permute(should from 0 - 1)");//DEBUG
+//				printArray(permute);//DEBUG
 				
 				//get numOfUnorderNode++;
 				for(String childIDString : rule.split(":")[1].split(",") ) {
 					numOfUnorderNode++;
 				}
+//				System.out.println("number of unorder node:" + numOfUnorderNode);//DEBUG
+				
+				
+				
+				
+				
 				//array for unorder node index
 				int[] unoderNodes = new int[numOfUnorderNode];
 				int unoderNodesIndex = 0;
-				
+	
 				//replace index in rule by -1//e.g.permute[]{0,1,2} with UO rule node:0,2 -> permute[]{-1,1,-1}
 				//fill unoderNodes[] by unorder nodes//e.g. unoderNodes[]{0,2}
 				for(String childIDString : rule.split(":")[1].split(",") ) {
@@ -56,16 +66,23 @@ public class test {
 					unoderNodes[unoderNodesIndex++] = childID;
 					permute[childID] = -1;
 				}
-				
+//				System.out.println("permute with -1 index");//DEBUG
+//				printArray(permute);//DEBUG
 				
 				
 				int[] permutesOfUONode = permute(0,unoderNodes.length, unoderNodes, null);
+//				System.out.println("permutesOfUONode:");//DEBUG
+//				printArray(permutesOfUONode);//DEBUG
 				
 				///* stop at this part, let me think think
 				int pCount = 0;//counter to separate pairs
 				int[] permuteWithSpace = null;
 				for(int index : permutesOfUONode) {
+//					System.out.println("current index is " + index);//DEBUG
+					
 					pCount++;
+//					System.out.println("pCount is " + pCount);//DEBUG
+					
 					if(permuteWithSpace == null) {
 						//deep copy permute to permuteWithSpace
 						permuteWithSpace = new int[currentExp.children.size()];
@@ -73,6 +90,8 @@ public class test {
 							permuteWithSpace[i] = permute[i];
 						}
 					}
+//					printArray(permuteWithSpace);//DEBUG
+					
 					if(permuteWithSpace != null) {
 						for(int i = 0 ; i < permuteWithSpace.length; i++) {
 							if(permuteWithSpace[i] == -1) {
@@ -94,8 +113,10 @@ public class test {
 						if(permuteList == null) {
 							permuteList = new ArrayList<int[]>();
 							permuteList.add(permuteWithSpace);
+							permuteWithSpace = null;
 						}else {
 							permuteList.add(permuteWithSpace);
+							permuteWithSpace = null;
 						}
 					}
 					
@@ -145,6 +166,16 @@ public class test {
 	        fact = fact * i;
 	    }
 	    return fact;
+	}
+	
+	public void printArray(int[] a) {
+		int i = 0;
+		for (int x : a) {
+			System.out.print(x + " ");
+			i++;
+		}
+		System.out.println();
+		System.out.println("num of int:" + i);
 	}
 	///////////////////////////////
 }
