@@ -501,7 +501,7 @@ public class newCompare<T> {
 				if(currentExp.nodeID == Integer.parseInt(rule.split(":")[0])) {
 					System.out.println("In permute process, currentExp:" + currentExp.childID + " " + currentExp.data);//DEBUG
 					System.out.println("rule:" + rule);//DEBUG
-					List<int[]> permuteList;
+					List<int[]> permuteList = null;
 					int numOfUnorderNode = 0;
 					
 					//create 0-n array//e.g.permute[]{0,1,2}
@@ -530,17 +530,47 @@ public class newCompare<T> {
 					
 					int[] permutesOfUONode = permute(0,unoderNodes.length, unoderNodes, null);
 					
-					/* stop at this part, let me think think
-					int pCount = 0;//counter to separate pairs 
-					for(int x : permutesOfUONode) {
-						if(pCount < permutesOfUONode.length) {
-							pCount++;
+					///* stop at this part, let me think think
+					int pCount = 0;//counter to separate pairs
+					int[] permuteWithSpace = null;
+					for(int index : permutesOfUONode) {
+						pCount++;
+						if(permuteWithSpace == null) {
+							//deep copy permute to permuteWithSpace
+							permuteWithSpace = new int[currentExp.children.size()];
+							for(int i = 0; i < permute.length; i++) {
+								permuteWithSpace[i] = permute[i];
+							}
 						}
-						if(pCount % unoderNodes.length == 0) {
-							
+						if(permuteWithSpace != null) {
+							for(int i = 0 ; i < permuteWithSpace.length; i++) {
+								if(permuteWithSpace[i] == -1) {
+									permuteWithSpace[i] = index;
+									break;
+								}
+							}
 						}
+						
+						boolean noSpace = true;
+						for(int x : permuteWithSpace) {
+							if(x == -1) {
+								noSpace = false;
+								break;
+							}
+						}
+						
+						if(noSpace) {
+							if(permuteList == null) {
+								permuteList = new ArrayList<int[]>();
+								permuteList.add(permuteWithSpace);
+							}else {
+								permuteList.add(permuteWithSpace);
+							}
+						}
+						
+						//if(pCount % unoderNodes.length == 0) {}
 					}
-					stop at this part, let me think think*/
+					//stop at this part, let me think think*/
 					
 					//////////////need to change the permute() output to continue
 					
