@@ -490,6 +490,8 @@ public class newCompare<T> {
 				System.out.println("handleing unorder");
 				
 				boolean matched = false;
+				NLPTreeNode<T> tmp_next_Actual_pbRef = next_Actual_pbRef;
+				NLPTreeNode<T> tmp_last_Actual_pbRef = last_Actual_pbRef;
 				
 				for (int[] permute : permutesList) {
 					boolean permuteMatched = true;
@@ -507,8 +509,7 @@ public class newCompare<T> {
 					// **************************
 
 					// code below are the same as case 2 above //not test yet//copy only
-					for (NLPTreeNode<T> exp_child : reindexedChildren) {
-		
+					for (NLPTreeNode<T> exp_child : reindexedChildren) {	
 						if (!compare_diffStructure_ss_p(exp_child, next_Actual_pbRef, last_Actual_pbRef, sim_rules, order_rules))// not sure for this line, should it call different structure or different// structure with ss
 							permuteMatched = false;
 					}
@@ -540,6 +541,8 @@ public class newCompare<T> {
 					// **************************
 					// **************************
 					// **************************
+					next_Actual_pbRef = tmp_next_Actual_pbRef;
+					last_Actual_pbRef =  tmp_last_Actual_pbRef;
 				}
 				System.out.println("all permutes NOT match");
 				return false;
