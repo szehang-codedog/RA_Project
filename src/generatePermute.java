@@ -2,10 +2,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class test {
+public class generatePermute<T> {
 	public static void main(String[] augs) {
 		coreNLPOutput NLPTree = new coreNLPOutput();
-		test testing = new test();
+		generatePermute<String> testing = new generatePermute<String>();
 		
 		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("Input the interest rate");
 		NLPTreeNode<String> currentExp = test_exp.get(5);
@@ -16,7 +16,7 @@ public class test {
 			System.out.println("child:"+ x.nodeID +" "+ x.childID);
 		}
 		*/
-		List<int[]> a = testing.permuteTest(order_rules, currentExp);
+		List<int[]> a = testing.permute(order_rules, currentExp);
 		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
 		System.out.println(a.size());
 		
@@ -28,7 +28,7 @@ public class test {
 		}
 	}
 	///////////////////////////////
-	public List<int[]> permuteTest(List<String> order_rules, NLPTreeNode<String> currentExp) {
+	public List<int[]> permute(List<String> order_rules, NLPTreeNode<T> currentExp) {
 		List<int[]> permuteList = null;
 		for(String rule : order_rules) {
 			if(currentExp.nodeID == Integer.parseInt(rule.split(":")[0])) {
@@ -79,7 +79,7 @@ public class test {
 				int[] permuteWithSpace = null;
 				for(int index : permutesOfUONode) {
 //					System.out.println("current index is " + index);//DEBUG
-					
+				
 					pCount++;
 //					System.out.println("pCount is " + pCount);//DEBUG
 					

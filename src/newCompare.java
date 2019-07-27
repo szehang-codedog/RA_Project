@@ -489,95 +489,35 @@ public class newCompare<T> {
 					last_Actual_pbRef = w.getRightMostLeaf();
 				}
 			}
-
-
+			
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			generatePermute<T> generatePermute = new generatePermute<T>();
+			List<int[]> permutesList = generatePermute.permute(order_rules, currentExp);
+			
+			for(int[] permute : permutesList) {
+				List<NLPTreeNode<T>> reindexedChildren = new ArrayList<NLPTreeNode<T>>();
+				for(int index : permute) {
+					reindexedChildren.add(currentExp.children.get(index));
+				}
+				/////the remain code should place here and replace currentExp.children by reindexedChildren
+				/////the problem the problem is I don't know how to use the next_Actual_pbRef   
+			}
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			
+			
+			
+			
+			
 			///////////////////////////////////
 			//////////////////////////////////
 			/////////////////////////////////
-			
-			
-			//p
-			for(String rule : order_rules) {
-				if(currentExp.nodeID == Integer.parseInt(rule.split(":")[0])) {
-					System.out.println("In permute process, currentExp:" + currentExp.childID + " " + currentExp.data);//DEBUG
-					System.out.println("rule:" + rule);//DEBUG
-					List<int[]> permuteList = null;
-					int numOfUnorderNode = 0;
-					
-					//create 0-n array//e.g.permute[]{0,1,2}
-					int[] permute = new int[currentExp.children.size()];
-					for(int i = 0; i < permute.length; i++) {
-						permute[i] = i;
-					}
-					
-					//get numOfUnorderNode++;
-					for(String childIDString : rule.split(":")[1].split(",") ) {
-						numOfUnorderNode++;
-					}
-					//array for unorder node index
-					int[] unoderNodes = new int[numOfUnorderNode];
-					int unoderNodesIndex = 0;
-					
-					//replace index in rule by -1//e.g.permute[]{0,1,2} with UO rule node:0,2 -> permute[]{-1,1,-1}
-					//fill unoderNodes[] by unorder nodes//e.g. unoderNodes[]{0,2}
-					for(String childIDString : rule.split(":")[1].split(",") ) {
-						int childID = Integer.parseUnsignedInt(childIDString);
-						unoderNodes[unoderNodesIndex++] = childID;
-						permute[childID] = -1;
-					}
-					
-					
-					
-					int[] permutesOfUONode = permute(0,unoderNodes.length, unoderNodes, null);
-					
-					///* stop at this part, let me think think
-					int pCount = 0;//counter to separate pairs
-					int[] permuteWithSpace = null;
-					for(int index : permutesOfUONode) {
-						pCount++;
-						if(permuteWithSpace == null) {
-							//deep copy permute to permuteWithSpace
-							permuteWithSpace = new int[currentExp.children.size()];
-							for(int i = 0; i < permute.length; i++) {
-								permuteWithSpace[i] = permute[i];
-							}
-						}
-						if(permuteWithSpace != null) {
-							for(int i = 0 ; i < permuteWithSpace.length; i++) {
-								if(permuteWithSpace[i] == -1) {
-									permuteWithSpace[i] = index;
-									break;
-								}
-							}
-						}
 						
-						boolean noSpace = true;
-						for(int x : permuteWithSpace) {
-							if(x == -1) {
-								noSpace = false;
-								break;
-							}
-						}
-						
-						if(noSpace) {
-							if(permuteList == null) {
-								permuteList = new ArrayList<int[]>();
-								permuteList.add(permuteWithSpace);
-							}else {
-								permuteList.add(permuteWithSpace);
-							}
-						}
-						
-						//if(pCount % unoderNodes.length == 0) {}
-					}
-					//stop at this part, let me think think*/
-					
-					//////////////need to change the permute() output to continue
-					
-				}
-			}
-			
-			
 			//code below are  the same as case 2 above //not test yet//copy only
 			for (NLPTreeNode<T> exp_child : currentExp.children) {
 				if (!compare_diffStructure_ss_p(exp_child, next_Actual_pbRef, last_Actual_pbRef, sim_rules, order_rules))//not sure for this line, should it call different structure or different structure with ss
