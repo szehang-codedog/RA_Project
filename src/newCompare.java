@@ -503,7 +503,42 @@ public class newCompare<T> {
 					reindexedChildren.add(currentExp.children.get(index));
 				}
 				/////the remain code should place here and replace currentExp.children by reindexedChildren
-				/////the problem the problem is I don't know how to use the next_Actual_pbRef   
+				/////the problem the problem is I don't know how to use the next_Actual_pbRef
+				
+				
+				//**************************
+				//************************** not test yet
+				//**************************
+				
+				//code below are  the same as case 2 above //not test yet//copy only
+				for (NLPTreeNode<T> exp_child : reindexedChildren) {
+					if (!compare_diffStructure_ss_p(exp_child, next_Actual_pbRef, last_Actual_pbRef, sim_rules, order_rules))//not sure for this line, should it call different structure or different structure with ss
+						return false;
+				}
+
+				//System.out.println("should not show");//DEBUG
+				System.out.println("	all_expToken_used = " + all_expToken_used);//DEBUG
+				//System.out.println("all_actToken_used= = =" + all_actToken_used);//DEBUG
+				//System.out.println(next_Actual_pbRef.data + " " + lastAct.data);
+				if (next_Actual_pbRef.tokenID < last_Actual_pbRef.tokenID && all_expToken_used) {
+					for (NLPTreeNode<T> token : next_Actual_pbRef.getRoot().leafNodeList()) {
+						if (token.tokenID > next_Actual_pbRef.tokenID) {
+							System.out.println(token.data);
+							if (!isIgnore(token.data)) {
+								System.out.print("unuse act_token is/are not ignore: ");//DEBUG
+								while(token != null) {
+									System.out.print(token.data + " ");
+									token = token.nextToken;
+								}
+								System.out.println();
+								return false;
+							}
+						}
+					}				 
+				}
+				//**************************
+				//**************************
+				//**************************
 			}
 			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
