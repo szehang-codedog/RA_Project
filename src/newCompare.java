@@ -484,9 +484,16 @@ public class newCompare<T> {
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			generatePermute<T> generatePermute = new generatePermute<T>();
 			List<int[]> permutesList = generatePermute.permute(order_rules, currentExp);
-
+			///System.out.println("pass node id " + currentExp.nodeID);
+			
 			if (permutesList != null) {
+				System.out.println("handleing unorder");
+				
+				boolean matched = false;
+				
 				for (int[] permute : permutesList) {
+					boolean permuteMatched = true;
+					
 					List<NLPTreeNode<T>> reindexedChildren = new ArrayList<NLPTreeNode<T>>();
 					for (int index : permute) {
 						reindexedChildren.add(currentExp.children.get(index));
@@ -501,10 +508,9 @@ public class newCompare<T> {
 
 					// code below are the same as case 2 above //not test yet//copy only
 					for (NLPTreeNode<T> exp_child : reindexedChildren) {
-						if (!compare_diffStructure_ss_p(exp_child, next_Actual_pbRef, last_Actual_pbRef, sim_rules,
-								order_rules))// not sure for this line, should it call different structure or different
-												// structure with ss
-							return false;
+		
+						if (!compare_diffStructure_ss_p(exp_child, next_Actual_pbRef, last_Actual_pbRef, sim_rules, order_rules))// not sure for this line, should it call different structure or different// structure with ss
+							permuteMatched = false;
 					}
 
 					// System.out.println("should not show");//DEBUG
@@ -522,15 +528,21 @@ public class newCompare<T> {
 										token = token.nextToken;
 									}
 									System.out.println();
-									return false;
+									permuteMatched =  false;
 								}
 							}
 						}
+					}
+					
+					if(permuteMatched) {
+						return true;
 					}
 					// **************************
 					// **************************
 					// **************************
 				}
+				System.out.println("all permutes NOT match");
+				return false;
 			}
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -708,7 +720,7 @@ public class newCompare<T> {
 			List<String> sim_rules = Arrays.asList();
 			List<String> order_rules = Arrays.asList("8:0,2"); // parentNodeID:childID1,childID2 e.g. 5:0,1
 
-			System.out.println(compare.compare_diffStructure_ss(test_exp.get(0), a, b, sim_rules, order_rules));
+			System.out.println(compare.compare_diffStructure_ss_p(test_exp.get(0), a, b, sim_rules, order_rules));
 		}
 	}
 
