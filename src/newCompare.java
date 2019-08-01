@@ -149,7 +149,7 @@ public class newCompare<T> {
 			return true;
 		}
 	}
-
+ 
 	public boolean compare_diffStructure_ss(NLPTreeNode<T> currentExp, NLPTreeNode<T> nextAct, NLPTreeNode<T> lastAct,
 			List<String> sim_rules, List<String> order_rules) {
 		// nextAct = the first not used token
@@ -352,13 +352,16 @@ public class newCompare<T> {
 
 		// BASE case
 		if (DEBUG == 1)
-			System.out.println("		currentExp = " + currentExp.data + " | nextAct = " + nextAct.data
-					+ " | lastAct = " + lastAct.data);// DEBUG
+			System.out.println("		currentExp = " + currentExp.data + " | nextAct = " + nextAct.data + " | lastAct = " + lastAct.data);// DEBUG
 		if (currentExp.isLeaf()) {
 			if (isIgnore(currentExp.data)) {
+				/*testing*//*skip token by ignore*/currentExp.usedToken[currentExp.tokenID] = true;
 				System.out.println("\"" + currentExp.data + "\"" + " in EXPECTED is ignored");
-				if (currentExp.nextToken == null)
+				if (currentExp.nextToken == null) {
+					/*DEBUGING_FALSEPLACE*/System.out.print("DDDDDDDDDD false 01");
 					return false;
+				}
+				
 				return true;
 			}
 
@@ -378,15 +381,16 @@ public class newCompare<T> {
 			}
 
 			if ((nextAct.tokenID + 1) <= lastAct.tokenID)
-				next_Actual_pbRef = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1); // if no this line, it
-																								// can pass the first
-																								// comparison
+				next_Actual_pbRef = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1);
+			
 
-			System.out.println("Comparing " + currentExp.data + " VS " + nextAct.data + "   (("
-					+ currentExp.data.equals(nextAct.data));// DEBUG
+			System.out.println("Comparing " + currentExp.data + " VS " + nextAct.data + "   (("	+ currentExp.data.equals(nextAct.data));// DEBUG
 
-			if (currentExp.data.equals(nextAct.data)
-					&& currentExp.tokenID == currentExp.getRoot().leafNodeList().size() - 1) {
+			if (currentExp.data.equals(nextAct.data)) {
+				/*tseting1/8*/currentExp.usedToken[currentExp.tokenID] = true;
+			}
+			
+			if (currentExp.data.equals(nextAct.data) && currentExp.isAllTokenUsed()) {
 				all_expToken_used = true;
 				// System.out.println("***" + nextAct.data + currentExp.data + " | " +
 				// currentExp.tokenID + " " +(currentExp.getRoot().leafNodeList().size() - 1));
@@ -394,9 +398,11 @@ public class newCompare<T> {
 				System.out.println("---" + next_Actual_pbRef.data);
 			}
 
+			//find next expToken if there is no next actToken
 			if (!all_expToken_used && nextAct.nextToken == null) {
 				for (NLPTreeNode<T> token : currentExp.getRoot().leafNodeList()) {
 					if (token.tokenID > currentExp.tokenID && !isIgnore(token.data)) {
+						/*DEBUGING_FALSEPLACE*/System.out.print("DDDDDDDDDD false 02");
 						return false;
 					}
 				}
@@ -407,7 +413,8 @@ public class newCompare<T> {
 			 * nextAct.getRoot().leafNodeList().size() - 1) { all_actToken_used = true; }
 			 */
 			/////
-
+			
+			/*testing*/currentExp.usedToken[currentExp.tokenID] = true;
 			return currentExp.data.equals(nextAct.data);// return compare(currentExp, actSeq[next_act-1])
 
 		} else { // RECURSIVE Case
@@ -459,8 +466,7 @@ public class newCompare<T> {
 
 						double phraseSim = sim.phraseSim(currentExp.subtreeToString(), w.subtreeToString());
 
-						System.out.println("  UMBC( " + currentExp.subtreeToString() + " , " + w.subtreeToString()
-								+ " ) ==> " + phraseSim);
+						System.out.println("  UMBC( " + currentExp.subtreeToString() + " , " + w.subtreeToString() + " ) ==> " + phraseSim);
 
 						if (phraseSim >= Double.parseDouble(rule.split(":")[1])) {
 							System.out.println("     Score is high enough, will be continued");
@@ -487,7 +493,7 @@ public class newCompare<T> {
 			///System.out.println("pass node id " + currentExp.nodeID);
 			
 			if (permutesList != null) {
-				System.out.println("handleing unorder");
+				System.out.println("handleing unorder");//DEBUG
 				
 				boolean matched = false;
 				NLPTreeNode<T> tmp_next_Actual_pbRef = next_Actual_pbRef;
@@ -495,6 +501,9 @@ public class newCompare<T> {
 				
 				for (int[] permute : permutesList) {
 					boolean permuteMatched = true;
+					//stop at here, need copy the usedToken and restore it after one permute match//
+					boolean[] tmp_usedToken = new boolean[currentExp.usedToken.length];
+					System.arraycopy(currentExp.usedToken, 0, tmp_usedToken, 0, currentExp.usedToken.length);
 					
 					List<NLPTreeNode<T>> reindexedChildren = new ArrayList<NLPTreeNode<T>>();
 					for (int index : permute) {
@@ -509,9 +518,15 @@ public class newCompare<T> {
 					// **************************
 
 					// code below are the same as case 2 above //not test yet//copy only
-					for (NLPTreeNode<T> exp_child : reindexedChildren) {	
-						if (!compare_diffStructure_ss_p(exp_child, next_Actual_pbRef, last_Actual_pbRef, sim_rules, order_rules))// not sure for this line, should it call different structure or different// structure with ss
+					for (NLPTreeNode<T> exp_child : reindexedChildren) {
+						if (!compare_diffStructure_ss_p(exp_child, next_Actual_pbRef, last_Actual_pbRef, sim_rules, order_rules)) {
 							permuteMatched = false;
+							System.out.println("000000000000000000");
+							for(boolean x : currentExp.usedToken) {
+								System.out.print(" " + x);
+							}
+						}
+						
 					}
 
 					// System.out.println("should not show");//DEBUG
@@ -535,16 +550,26 @@ public class newCompare<T> {
 						}
 					}
 					
+					//System.out.println("sssssssssss" + permuteMatched);//DEBUG
+					
 					if(permuteMatched) {
 						return true;
 					}
 					// **************************
 					// **************************
 					// **************************
-					next_Actual_pbRef = tmp_next_Actual_pbRef;
-					last_Actual_pbRef =  tmp_last_Actual_pbRef;
+					if(!permuteMatched) {
+						next_Actual_pbRef = tmp_next_Actual_pbRef;
+						last_Actual_pbRef =  tmp_last_Actual_pbRef;
+						System.arraycopy(tmp_usedToken, 0, currentExp.usedToken, 0, tmp_usedToken.length);
+					}
 				}
 				System.out.println("all permutes NOT match");
+				for(boolean x :currentExp.usedToken) {
+					
+					System.out.println(x);
+				}
+				
 				return false;
 			}
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -587,7 +612,8 @@ public class newCompare<T> {
 			///////////////////////////////////
 			//////////////////////////////////
 			/////////////////////////////////
-
+			
+			/*testing*//*skip token by ignore*/currentExp.usedToken[currentExp.tokenID] = true;
 			return true;
 		}
 	}

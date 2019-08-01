@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.List;
 
 import edu.stanford.nlp.simple.Document;
@@ -33,8 +34,24 @@ public class compareNLPTree<T> {
 		System.out.println("test_exp");
 		test_exp.get(0).printWholeTree();
 		
+		//test for pointer of usedToken
+		System.out.println("------------------------------------");
+//		test_exp.get(0).usedToken[1] = true;
+		Arrays.fill(test_exp.get(0).usedToken, true);
+		for (NLPTreeNode<String> x: test_exp) {
+			for(boolean tf :x.usedToken) {
+				System.out.print(tf +" ");
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println(test_exp.get(0).isAllTokenUsed());
+		
+		
+		/*
 		System.out.println("------------------------------------");
 		System.out.print(test_exp.get(13).subtreeToString());
+		*/
 		
 		/*//test for getwByLeafMostLeaf()
 		System.out.println("------------------------------------");

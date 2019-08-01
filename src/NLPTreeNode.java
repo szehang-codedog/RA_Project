@@ -16,6 +16,7 @@ public class NLPTreeNode<T> {
 	NLPTreeNode<T> nextToken;
 	NLPTreeNode<T> previousToken;
 	String compOptions;
+	boolean[] usedToken;
 
 	public NLPTreeNode(T data, String type) {
 		this.data = data;
@@ -137,6 +138,8 @@ public class NLPTreeNode<T> {
 		return result;
 	}
 
+
+	
 	// public
 
 	
@@ -156,6 +159,15 @@ public class NLPTreeNode<T> {
 		} else {
 			return false;
 		}
+	}
+	
+	public boolean isAllTokenUsed() {
+		for(boolean used : this.usedToken) {
+			if(!used) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	//GETTER//

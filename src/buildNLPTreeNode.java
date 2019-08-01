@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.stanford.nlp.trees.Tree;
@@ -10,6 +11,7 @@ public class buildNLPTreeNode {
     int nodeID = 0;
     NLPTreeNode<String> root;
     List<NLPTreeNode<String>> NLPTree = new ArrayList<>();
+    boolean[] usedToken; 
 
     public List<NLPTreeNode<String>> buildTree(Tree t, NLPTreeNode<String> pNode) { // pNode Parent Node //cNode Child Node
 
@@ -49,6 +51,16 @@ public class buildNLPTreeNode {
             }
         }
         NLPTree.get(0).initialAssign();
+        
+        //usedToken[all false] link to all node
+        usedToken = new boolean[NLPTree.get(0).leafNodeList().size()];
+        Arrays.fill(usedToken, false);
+        for(NLPTreeNode<String> node : NLPTree) {
+        	node.usedToken = usedToken;
+        	System.out.println(usedToken);
+        }
+        System.out.println();
+        
         return NLPTree;
     }
 }
