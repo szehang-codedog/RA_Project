@@ -10,7 +10,7 @@ import java.util.List;
 	v_act = act_child
  */
 public class newCompare<T> {
-	ArrayList<String> stop_word = new ArrayList<String>(Arrays.asList("the", "of", "between", "a"));
+	ArrayList<String> stop_word = new ArrayList<String>(Arrays.asList("the", "of", "between", "a"));	
 	NLPTreeNode<T> next_Actual_pbRef;
 	NLPTreeNode<T> last_Actual_pbRef;
 
@@ -402,7 +402,8 @@ public class newCompare<T> {
 			if (!all_expToken_used && nextAct.nextToken == null) {
 				for (NLPTreeNode<T> token : currentExp.getRoot().leafNodeList()) {
 					if (token.tokenID > currentExp.tokenID && !isIgnore(token.data)) {
-						/*DEBUGING_FALSEPLACE*/System.out.print("DDDDDDDDDD false 02");
+						///*DEBUGING_FALSEPLACE*/System.out.print("DDDDDDDDDD false 02");
+						System.out.println("some expToken is/are unused");//DEBUG
 						return false;
 					}
 				}
@@ -521,7 +522,7 @@ public class newCompare<T> {
 					for (NLPTreeNode<T> exp_child : reindexedChildren) {
 						if (!compare_diffStructure_ss_p(exp_child, next_Actual_pbRef, last_Actual_pbRef, sim_rules, order_rules)) {
 							permuteMatched = false;
-							System.out.println("000000000000000000");
+							System.out.println("00000000 compare return false");
 							for(boolean x : currentExp.usedToken) {
 								System.out.print(" " + x);
 							}
@@ -695,9 +696,15 @@ public class newCompare<T> {
 		newCompare<String> compare = new newCompare();
 
 		int test_case = 4;
+		/*
 		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("I ate apple and banana");
 		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("I ate banana and apple");
+		 */
 
+		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("I have a car and a bus.");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("I have a bus and a car.");
+		
+		
 		System.out.println("exp: " + test_exp.get(0).subtreeToString());
 		test_exp.get(0).printWholeTree();
 		System.out.println("act: " + test_act.get(0).subtreeToString());
@@ -745,10 +752,11 @@ public class newCompare<T> {
 			NLPTreeNode<String> a = test_act.get(0).getRoot().leafNodeList().get(0); // First Token
 			NLPTreeNode<String> b = test_act.get(0).getRoot().leafNodeList().get(test_act.get(0).getRoot().leafNodeList().size() - 1); // Last Token
 
-			//List<String> sim_rules = Arrays.asList("5:0.8");
-			List<String> sim_rules = Arrays.asList();
+			List<String> sim_rules = Arrays.asList("5:0.8");
 			List<String> order_rules = Arrays.asList("8:0,2"); // parentNodeID:childID1,childID2 e.g. 5:0,1
-
+			//List<String> sim_rules = Arrays.asList();
+			//List<String> order_rules = Arrays.asList();
+			
 			System.out.println(compare.compare_diffStructure_ss_p(test_exp.get(0), a, b, sim_rules, order_rules));
 		}
 	}

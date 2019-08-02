@@ -1,0 +1,64 @@
+//empty
+>err, may need to be handle 
+@
+#
+
+//same
+>true, ok
+@I have a pan.
+#I have a pan.
+
+//not match at first token
+>I vs You = false, ok
+@I go to school by bus.
+#You go to school by bus.
+
+//not match at internal token
+>apple vs my = false, ok
+@This is a apple.
+#This is my apple.
+
+//not match at last token
+>student vs teacher = false, ok
+@I am a student.
+#I am a teacher.
+
+//repeat last expToken with rest are same
+>some expToken is/are unused, false, ok
+@I am a student student
+#I am a student
+
+//repeat last actToken with rest are same
+>unuse act_token is/are not ignore: student, false, ok
+@I am a student
+#I am a student student
+
+//exchange "car" and "bus" without rule
+>car vs bus, false, ok
+@I have a car and a bus.
+#I have a bus and a car.
+
+//exchange "car" and "bus" with rule sim_rules[8:0,2]
+>true, ok
+@I have a car and a bus.
+#I have a bus and a car.
+
+*** if 3 or more(n) elements a need to be exchang, it seems need n-1 rule 
+
+*** for now, two rule cant be used at same time
+
+//sample from pid 1477(not match)
+@Here is your Coke, $20 refundeed
+#Here is your Coke, $1 refunded
+
+//
+sample from pid 1578(same)
+@Input number of hours per session
+#Input number of hours per session
+
+//
+@
+#
+//
+@
+#

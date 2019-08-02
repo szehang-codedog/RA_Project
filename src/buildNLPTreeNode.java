@@ -57,9 +57,9 @@ public class buildNLPTreeNode {
         Arrays.fill(usedToken, false);
         for(NLPTreeNode<String> node : NLPTree) {
         	node.usedToken = usedToken;
-        	System.out.println(usedToken);
+        	//System.out.println(usedToken);
         }
-        System.out.println();
+        //System.out.println();
         
         return NLPTree;
     }
