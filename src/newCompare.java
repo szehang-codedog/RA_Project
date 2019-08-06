@@ -10,7 +10,7 @@ import java.util.List;
 	v_act = act_child
  */
 public class newCompare<T> {
-	ArrayList<String> stop_word = new ArrayList<String>(Arrays.asList("the", "of", "between", "a"));	
+	ArrayList<String> stop_word = new ArrayList<String>(Arrays.asList("the", "of", "between", "a", "in", "at", "an"));	
 	NLPTreeNode<T> next_Actual_pbRef;
 	NLPTreeNode<T> last_Actual_pbRef;
 
@@ -453,6 +453,7 @@ public class newCompare<T> {
 			/////
 
 			// handling SS(alpha)
+			NLPTreeNode<T> tmpLastAct = last_Actual_pbRef;/*8/6*/
 			for (String rule : sim_rules) {
 				if (currentExp.nodeID == Integer.parseInt(rule.split(":")[0])) {
 					System.out.println("Node " + currentExp.data + " need to handle SS...");
@@ -484,6 +485,7 @@ public class newCompare<T> {
 					last_Actual_pbRef = w.getRightMostLeaf();
 				}
 			}
+			last_Actual_pbRef = tmpLastAct;/*8/6*/
 
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -554,6 +556,7 @@ public class newCompare<T> {
 					//System.out.println("sssssssssss" + permuteMatched);//DEBUG
 					
 					if(permuteMatched) {
+						System.out.println("RRRRRRRRRRRRRR");
 						return true;
 					}
 					// **************************
@@ -696,13 +699,13 @@ public class newCompare<T> {
 		newCompare<String> compare = new newCompare();
 
 		int test_case = 4;
-		/*
-		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("I ate apple and banana");
-		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("I ate banana and apple");
-		 */
+		
+		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("I ate apple and banana at the classroom");
+		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("I ate banana and apple in classroom");
+		 
 
-		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("I have a car and a bus.");
-		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("I have a bus and a car.");
+//		List<NLPTreeNode<String>> test_exp = NLPTree.parseSentence("I have a car and a bus.");
+//		List<NLPTreeNode<String>> test_act = NLPTree.parseSentence("I have a bus and an car.");
 		
 		
 		System.out.println("exp: " + test_exp.get(0).subtreeToString());
@@ -752,7 +755,7 @@ public class newCompare<T> {
 			NLPTreeNode<String> a = test_act.get(0).getRoot().leafNodeList().get(0); // First Token
 			NLPTreeNode<String> b = test_act.get(0).getRoot().leafNodeList().get(test_act.get(0).getRoot().leafNodeList().size() - 1); // Last Token
 
-			List<String> sim_rules = Arrays.asList("5:0.8");
+			List<String> sim_rules = Arrays.asList("15:0.8");
 			List<String> order_rules = Arrays.asList("8:0,2"); // parentNodeID:childID1,childID2 e.g. 5:0,1
 			//List<String> sim_rules = Arrays.asList();
 			//List<String> order_rules = Arrays.asList();
