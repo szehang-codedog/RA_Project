@@ -453,7 +453,7 @@ public class newCompare<T> {
 			/////
 
 			// handling SS(alpha)
-			NLPTreeNode<T> tmpLastAct = last_Actual_pbRef;/*8/6*/
+			NLPTreeNode<T> tmpLastAct = last_Actual_pbRef;/*6/8*/
 			for (String rule : sim_rules) {
 				if (currentExp.nodeID == Integer.parseInt(rule.split(":")[0])) {
 					System.out.println("Node " + currentExp.data + " need to handle SS...");
@@ -485,7 +485,7 @@ public class newCompare<T> {
 					last_Actual_pbRef = w.getRightMostLeaf();
 				}
 			}
-			last_Actual_pbRef = tmpLastAct;/*8/6*/
+			last_Actual_pbRef = tmpLastAct;/*6/8*/
 
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
