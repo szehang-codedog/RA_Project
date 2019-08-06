@@ -114,7 +114,7 @@ public class newCompare<T> {
 			}
 
 			/// *
-			// System.out.println("should not show");//DEBUG
+			
 			System.out.println("	all_expToken_used = " + all_expToken_used);// DEBUG
 			// System.out.println("all_actToken_used= = =" + all_actToken_used);//DEBUG
 
@@ -163,7 +163,6 @@ public class newCompare<T> {
 				currentExp.usedToken[currentExp.tokenID] = true;
 				System.out.println("\"" + currentExp.data + "\"" + " in EXPECTED is ignored");  //DEBUG
 				if (currentExp.nextToken == null) {
-					System.out.print("DDDDDDDDDD false 01");  //DEBUG
 					return false;
 				}
 				
@@ -173,7 +172,7 @@ public class newCompare<T> {
 			while ((nextAct.tokenID <= lastAct.tokenID) && isIgnore(nextAct.data)) {
 				System.out.print("\"" + nextAct.data + "\"" + " in ACTUAL is ignored, ");
 				if (nextAct.tokenID + 1 > nextAct.getRoot().leafNodeList().size() - 1) {
-					System.out.println("###no more actToken");// DEBUG
+					System.out.println("no more actToken");// DEBUG
 					return false;
 				}
 				nextAct = nextAct.getRoot().leafNodeList().get(nextAct.tokenID + 1);
